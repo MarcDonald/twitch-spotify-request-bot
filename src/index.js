@@ -1,20 +1,12 @@
 const tmi = require('tmi.js');
-const SpotifyWebApi = require('spotify-web-api-node');
 const {
   TWITCH_CHANNEL,
   TWITCH_BOT_USERNAME,
   TWITCH_BOT_PASSWORD,
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_CLIENT_SECRET,
-  SPOTIFY_ACCESS_TOKEN,
-  SPOTIFY_PLAYLIST_ID,
 } = require('../config.json');
-
-const spotifyApi = new SpotifyWebApi({
-  clientId: SPOTIFY_CLIENT_ID,
-  clientSecret: SPOTIFY_CLIENT_SECRET,
-  redirectUri: 'http://localhost',
-});
+const messageUtils = require('./messageUtils');
+const spotifyServiceDef = require('./spotify.service');
+const spotifyService = spotifyServiceDef();
 
 const twitchOptions = {
   identify: {
@@ -29,17 +21,12 @@ const onTwitchMessageHandler = async (target, context, msg, self) => {
     return;
   }
 
-  if (msg.startsWith('https://open.spotify.com/track/')) {
-    try {
-      const startOfId = 'https://open.spotify.com/track/'.length;
-      const endOfId = msg.indexOf('?');
-      const trackId = msg.substring(startOfId, endOfId);
-      await spotifyApi.addTracksToPlaylist(SPOTIFY_PLAYLIST_ID, [
-        `spotify:track:${trackId}`,
-      ]);
-      console.log(`Added ${trackId}`);
-    } catch (e) {
-      console.error(`Error adding track ${e}`);
+  if (msg.startsWith(messageUtils.SPOTIFY_LINK_START)) {
+    const trackId = messageUtils.getTrackIdFromLink(msg);
+    if (trackId) {
+      spotifyService.addTrackToPlaylist(trackId);
+    } else {
+      console.error('No track ID');
     }
   }
 };
@@ -48,20 +35,8 @@ const onTwitchConnectedHandler = (addr, port) => {
   console.log(`Connected to ${addr}:${port}`);
 };
 
-const getSpotifyAuthorizationUrl = () => {
-  const scopes = ['playlist-read-private', 'playlist-modify-private'];
-
-  const authorizeUrl = spotifyApi.createAuthorizeURL(scopes);
-  console.log(authorizeUrl);
-};
-
 const runApp = async () => {
-  if (!SPOTIFY_ACCESS_TOKEN) {
-    getSpotifyAuthorizationUrl();
-    process.exit(1);
-  }
-  spotifyApi.setAccessToken(SPOTIFY_ACCESS_TOKEN);
-
+  spotifyService.authorize();
   const twitchClient = new tmi.client(twitchOptions);
 
   await twitchClient.on('message', onTwitchMessageHandler);
