@@ -1,10 +1,12 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 import AuthServer from './auth-server';
 import config from './config.json';
+import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
 
 export default class SpotifyService {
   private spotifyApi: SpotifyWebApi;
+  private spotifyAuth: SpotifyAuth;
 
   constructor() {
     this.spotifyApi = new SpotifyWebApi({
@@ -12,6 +14,16 @@ export default class SpotifyService {
       clientSecret: config.SPOTIFY_CLIENT_SECRET,
       redirectUri: 'http://localhost:8000/spotifyAuth',
     });
+
+    if (!fs.existsSync('./spotify-auth-store.json')) {
+      fs.writeFileSync(
+        './spotify-auth-store.json',
+        JSON.stringify(new SpotifyAuth('', ''))
+      );
+    }
+    this.spotifyAuth = JSON.parse(
+      fs.readFileSync('./spotify-auth-store.json', 'utf8')
+    );
   }
 
   private getAuthorizationUrl() {
@@ -22,15 +34,14 @@ export default class SpotifyService {
   }
 
   public async authorize(onAuth: Function) {
-    if (!config.SPOTIFY_REFRESH_TOKEN) {
-      await this.performNewAuthorization();
+    if (!this.spotifyAuth.refreshToken) {
+      await this.performNewAuthorization(onAuth);
     } else {
-      await this.refreshToken();
+      await this.refreshToken(onAuth);
     }
-    await onAuth();
   }
 
-  private async performNewAuthorization() {
+  private async performNewAuthorization(onAuth: Function) {
     const authUrl = this.getAuthorizationUrl();
     console.log('Click the following link and give this app permissions');
     console.log(authUrl);
@@ -40,22 +51,39 @@ export default class SpotifyService {
           console.error(error);
           process.exit(-1);
         }
-        this.spotifyApi.setAccessToken(data.body['access_token']);
-        this.spotifyApi.setRefreshToken(data.body['refresh_token']);
-        const newConfig = {
-          ...config,
-          SPOTIFY_REFRESH_TOKEN: data.body['refresh_token'],
-        };
-        fs.writeFile('src/config.json', JSON.stringify(newConfig), (err) => {
-          if (err) console.error(err);
-        });
+        const accessToken = data.body['access_token'];
+        const refreshToken = data.body['refresh_token'];
+        this.writeNewSpotifyAuth(accessToken, refreshToken);
+        this.spotifyApi.setAccessToken(accessToken);
+        this.spotifyApi.setRefreshToken(refreshToken);
+        await onAuth();
       });
     });
   }
 
-  private async refreshToken() {
-    this.spotifyApi.setRefreshToken(config.SPOTIFY_REFRESH_TOKEN);
-    this.spotifyApi.refreshAccessToken();
+  private async refreshToken(onAuth: Function) {
+    this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
+    this.spotifyApi.refreshAccessToken(async (err, data) => {
+      if (err) {
+        console.error(err);
+        process.exit(-1);
+      }
+      const accessToken = data.body['access_token'];
+      this.spotifyApi.setAccessToken(accessToken);
+      this.writeNewSpotifyAuth(accessToken, this.spotifyAuth.refreshToken);
+      await onAuth();
+    });
+  }
+
+  private writeNewSpotifyAuth(accessToken: string, refreshToken: string) {
+    const newSpotifyAuth = new SpotifyAuth(accessToken, refreshToken);
+    fs.writeFile(
+      './spotify-auth-store.json',
+      JSON.stringify(newSpotifyAuth),
+      (err) => {
+        if (err) console.error(err);
+      }
+    );
   }
 
   public async addTrackToPlaylist(trackId: string) {

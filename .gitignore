@@ -1,4 +1,5 @@
-config.json
+src/config.json
+spotify-auth-store.json
 build/
 .idea/
 node_modules/

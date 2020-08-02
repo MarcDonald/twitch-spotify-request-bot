@@ -1,21 +1,13 @@
 import tmi, { ChatUserstate } from 'tmi.js';
 import messageUtils from './messageUtils';
 import SpotifyService from './spotify.service';
-import {
-  TWITCH_CHANNEL,
-  TWITCH_BOT_USERNAME,
-  TWITCH_BOT_PASSWORD,
-} from './config.json';
+import { TWITCH_CHANNEL } from './config.json';
 
 export default class TwitchService {
   constructor(private spotifyService: SpotifyService) {}
 
   public async connectToChat() {
     const twitchOptions = {
-      identify: {
-        username: TWITCH_BOT_USERNAME,
-        password: TWITCH_BOT_PASSWORD,
-      },
       channels: [TWITCH_CHANNEL],
     };
     const twitchClient = tmi.client(twitchOptions);
