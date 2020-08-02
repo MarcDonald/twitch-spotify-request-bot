@@ -3,7 +3,7 @@ import express from 'express';
 export default class AuthServer {
   public waitForCode(onCodeReceived: Function) {
     const app = express();
-    const port = process.env.PORT || '8000';
+    const port = '8000';
 
     const server = app.listen(port, (err) => {
       if (err) return console.error(err);
