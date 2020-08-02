@@ -2,20 +2,26 @@
   "name": "twitch-spotify-request",
   "version": "1.0.0",
   "description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "lint": "prettier -c 'src/**/*{.js}'",
-    "lint:fix": "prettier --write 'src/**/*.js'"
+    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "lint": "prettier -c 'src/**/*{.js,.ts}'",
+    "lint:fix": "prettier --write 'src/**/*{.js,.ts}'"
   },
   "author": "Marc Donald",
   "license": "MIT",
   "dependencies": {
+    "@types/spotify-web-api-node": "^4.0.1",
+    "@types/tmi.js": "^1.4.0",
     "spotify-web-api-node": "^4.0.0",
     "tmi.js": "^1.5.0"
   },
   "devDependencies": {
-    "prettier": "^2.0.5"
+    "@types/node": "^14.0.27",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   }
 }
