@@ -1,11 +1,12 @@
 import express from 'express';
+import { AUTH_SERVER_PORT } from './config.json';
 
 export default class AuthServer {
   public waitForCode(onCodeReceived: Function) {
     const app = express();
-    const port = '8000';
+    const port = AUTH_SERVER_PORT;
 
-    const server = app.listen(port, (err) => {
+    const server = app.listen(port, (err: Error) => {
       if (err) return console.error(err);
       return console.log(`Auth server is listening on ${port}`);
     });

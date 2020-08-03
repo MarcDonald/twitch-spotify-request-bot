@@ -5,7 +5,9 @@
     (https://developer.spotify.com/dashboard/) and create a new application. The
     app can have whatever name and description you want. Once the app is
     created, click on Edit Settings and add a redirect URL of
-    `http://localhost:8000/spotifyAuth`
+    `http://localhost:8000/spotifyAuth` (note: the port will be whatever you
+    have set as the `AUTH_SERVER_PORT` in the `config.json` file, by default it
+    is 8000)
 * Run `yarn` or `npm install`
 * Create a `src/config.json` based on `src/config.json.example` and fill in the
     fields (the playlist ID can be found by right clicking on the playlist ->

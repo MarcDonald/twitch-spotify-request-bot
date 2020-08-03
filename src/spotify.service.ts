@@ -12,7 +12,7 @@ export default class SpotifyService {
     this.spotifyApi = new SpotifyWebApi({
       clientId: config.SPOTIFY_CLIENT_ID,
       clientSecret: config.SPOTIFY_CLIENT_SECRET,
-      redirectUri: 'http://localhost:8000/spotifyAuth',
+      redirectUri: `http://localhost:${config.AUTH_SERVER_PORT}/spotifyAuth`,
     });
 
     if (!fs.existsSync('./spotify-auth-store.json')) {
@@ -43,10 +43,16 @@ export default class SpotifyService {
     try {
       const addSong = async () => {
         console.log(`Attempting to add ${trackId}`);
-        await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
-          `spotify:track:${trackId}`,
-        ]);
-        console.log(`Added ${trackId}`);
+        if (await this.doesPlaylistContainTrack(trackId)) {
+          console.log('Song is already in playlist');
+        } else {
+          const songInfo = await this.spotifyApi.getTrack(trackId);
+          await this.spotifyApi.addTracksToPlaylist(
+            config.SPOTIFY_PLAYLIST_ID,
+            [`spotify:track:${trackId}`]
+          );
+          console.log(`Added ${songInfo?.body.name}`);
+        }
       };
 
       if (this.hasTokenExpired()) {
@@ -58,6 +64,20 @@ export default class SpotifyService {
     } catch (e) {
       console.error(`Error adding track ${e}`);
     }
+  }
+
+  private async doesPlaylistContainTrack(trackId: string) {
+    const playlistInfo = await this.spotifyApi.getPlaylist(
+      config.SPOTIFY_PLAYLIST_ID
+    );
+
+    let i;
+    for (i = 0; i < playlistInfo.body.tracks.items.length; i++) {
+      if (playlistInfo.body.tracks.items[i].track.id === trackId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private getAuthorizationUrl() {
@@ -96,6 +116,7 @@ export default class SpotifyService {
         process.exit(-1);
       }
       const accessToken = data.body['access_token'];
+      this.spotifyApi.setAccessToken(accessToken);
       const expireTime = this.calculateExpireTime(data.body['expires_in']);
       this.writeNewSpotifyAuth(
         accessToken,
