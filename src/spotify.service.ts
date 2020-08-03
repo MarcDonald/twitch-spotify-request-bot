@@ -141,6 +141,7 @@ export default class SpotifyService {
       refreshToken,
       expireTime
     );
+    this.spotifyAuth = newSpotifyAuth;
     fs.writeFile(
       './spotify-auth-store.json',
       JSON.stringify(newSpotifyAuth),
