@@ -18,7 +18,7 @@ export default class SpotifyService {
     if (!fs.existsSync('./spotify-auth-store.json')) {
       fs.writeFileSync(
         './spotify-auth-store.json',
-        JSON.stringify(new SpotifyAuth('', ''))
+        JSON.stringify(new SpotifyAuth('', '', new Date().getTime() / 1000))
       );
     }
     this.spotifyAuth = JSON.parse(
@@ -26,19 +26,45 @@ export default class SpotifyService {
     );
   }
 
+  public async authorize(onAuth: Function) {
+    console.log('Authorizing with Spotify');
+    if (!this.spotifyAuth.refreshToken) {
+      console.log('No credentials found, performing new authorization');
+      await this.performNewAuthorization(onAuth);
+    } else {
+      console.log('Spotify credentials found');
+      this.spotifyApi.setAccessToken(this.spotifyAuth.accessToken);
+      this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
+      await onAuth();
+    }
+  }
+
+  public async addTrackToPlaylist(trackId: string) {
+    try {
+      const addSong = async () => {
+        console.log(`Attempting to add ${trackId}`);
+        await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
+          `spotify:track:${trackId}`,
+        ]);
+        console.log(`Added ${trackId}`);
+      };
+
+      if (this.hasTokenExpired()) {
+        console.log('Spotify token expired, refreshing...');
+        await this.refreshToken(addSong);
+      } else {
+        await addSong();
+      }
+    } catch (e) {
+      console.error(`Error adding track ${e}`);
+    }
+  }
+
   private getAuthorizationUrl() {
     const scopes = ['playlist-read-private', 'playlist-modify-private'];
 
     const authorizeUrl = this.spotifyApi.createAuthorizeURL(scopes, '');
     return authorizeUrl;
-  }
-
-  public async authorize(onAuth: Function) {
-    if (!this.spotifyAuth.refreshToken) {
-      await this.performNewAuthorization(onAuth);
-    } else {
-      await this.refreshToken(onAuth);
-    }
   }
 
   private async performNewAuthorization(onAuth: Function) {
@@ -53,7 +79,8 @@ export default class SpotifyService {
         }
         const accessToken = data.body['access_token'];
         const refreshToken = data.body['refresh_token'];
-        this.writeNewSpotifyAuth(accessToken, refreshToken);
+        const expireTime = this.calculateExpireTime(data.body['expires_in']);
+        this.writeNewSpotifyAuth(accessToken, refreshToken, expireTime);
         this.spotifyApi.setAccessToken(accessToken);
         this.spotifyApi.setRefreshToken(refreshToken);
         await onAuth();
@@ -69,14 +96,30 @@ export default class SpotifyService {
         process.exit(-1);
       }
       const accessToken = data.body['access_token'];
-      this.spotifyApi.setAccessToken(accessToken);
-      this.writeNewSpotifyAuth(accessToken, this.spotifyAuth.refreshToken);
+      const expireTime = this.calculateExpireTime(data.body['expires_in']);
+      this.writeNewSpotifyAuth(
+        accessToken,
+        this.spotifyAuth.refreshToken,
+        expireTime
+      );
       await onAuth();
     });
   }
 
-  private writeNewSpotifyAuth(accessToken: string, refreshToken: string) {
-    const newSpotifyAuth = new SpotifyAuth(accessToken, refreshToken);
+  private calculateExpireTime(expiresIn: number): number {
+    return new Date().getTime() / 1000 + expiresIn;
+  }
+
+  private writeNewSpotifyAuth(
+    accessToken: string,
+    refreshToken: string,
+    expireTime: number
+  ) {
+    const newSpotifyAuth = new SpotifyAuth(
+      accessToken,
+      refreshToken,
+      expireTime
+    );
     fs.writeFile(
       './spotify-auth-store.json',
       JSON.stringify(newSpotifyAuth),
@@ -86,14 +129,7 @@ export default class SpotifyService {
     );
   }
 
-  public async addTrackToPlaylist(trackId: string) {
-    try {
-      await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
-        `spotify:track:${trackId}`,
-      ]);
-      console.log(`Added ${trackId}`);
-    } catch (e) {
-      console.error(`Error adding track ${e}`);
-    }
+  private hasTokenExpired(): boolean {
+    return new Date().getTime() / 1000 >= this.spotifyAuth.expireTime;
   }
 }
