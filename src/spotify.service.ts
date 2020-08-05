@@ -39,19 +39,16 @@ export default class SpotifyService {
     }
   }
 
-  public async addTrackToPlaylist(trackId: string) {
+  public async addTrack(trackId: string) {
     try {
       const addSong = async () => {
         console.log(`Attempting to add ${trackId}`);
-        if (await this.doesPlaylistContainTrack(trackId)) {
-          console.log('Song is already in playlist');
-        } else {
-          const songInfo = await this.spotifyApi.getTrack(trackId);
-          await this.spotifyApi.addTracksToPlaylist(
-            config.SPOTIFY_PLAYLIST_ID,
-            [`spotify:track:${trackId}`]
-          );
-          console.log(`Added ${songInfo?.body.name}`);
+        const songInfo = await this.spotifyApi.getTrack(trackId);
+        if (config.ADD_TO_QUEUE) {
+          await this.addToQueue(trackId, songInfo?.body.name);
+        }
+        if (config.ADD_TO_PLAYLIST) {
+          await this.addToPlaylist(trackId, songInfo?.body.name);
         }
       };
 
@@ -64,6 +61,34 @@ export default class SpotifyService {
     } catch (e) {
       console.error(`Error adding track ${e}`);
     }
+  }
+
+  private async addToQueue(trackId: string, songName: string) {
+    // @ts-ignore
+    // TODO this is from a PR in the Spotify Web API Node package so doesn't show up in the @types
+    await this.spotifyApi.addTrackToQueue(this.createTrackURI(trackId));
+    console.log(`Added ${songName} to queue`);
+  }
+
+  private async addToPlaylist(trackId: string, songName: string) {
+    if (config.SPOTIFY_PLAYLIST_ID) {
+      if (await this.doesPlaylistContainTrack(trackId)) {
+        console.log(`${songName} is already in playlist`);
+      } else {
+        await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
+          this.createTrackURI(trackId),
+        ]);
+        console.log(`Added ${songName} to playlist`);
+      }
+    } else {
+      console.error(
+        'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
+      );
+    }
+  }
+
+  private createTrackURI(trackId: string): string {
+    return `spotify:track:${trackId}`;
   }
 
   private async doesPlaylistContainTrack(trackId: string) {
@@ -81,7 +106,11 @@ export default class SpotifyService {
   }
 
   private getAuthorizationUrl() {
-    const scopes = ['playlist-read-private', 'playlist-modify-private'];
+    const scopes = [
+      'user-modify-playback-state',
+      'playlist-read-private',
+      'playlist-modify-private',
+    ];
 
     const authorizeUrl = this.spotifyApi.createAuthorizeURL(scopes, '');
     return authorizeUrl;

@@ -43,7 +43,7 @@ export default class TwitchService {
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
       const trackId = messageUtils.getTrackIdFromLink(msg);
       if (trackId) {
-        await this.spotifyService.addTrackToPlaylist(trackId);
+        await this.spotifyService.addTrack(trackId);
       } else {
         console.error('Unable to parse track ID from message');
       }

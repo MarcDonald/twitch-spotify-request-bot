@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "npm run build && node build/index.js",
     "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "lint": "prettier -c 'src/**/*{.js,.ts}'",
-    "lint:fix": "prettier --write 'src/**/*{.js,.ts}'"
+    "lint": "prettier -c 'src/**/*{.js,.ts}' && prettier -c '*.md'",
+    "lint:fix": "prettier --write 'src/**/*{.js,.ts}' && prettier --write '*.md'"
   },
   "author": "Marc Donald",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "@types/tmi.js": "^1.4.0",
     "express": "^4.17.1",
     "fs": "^0.0.1-security",
-    "spotify-web-api-node": "^4.0.0",
+    "spotify-web-api-node": "thelinmichael/spotify-web-api-node#302/head",
     "tmi.js": "^1.5.0"
   },
   "devDependencies": {
