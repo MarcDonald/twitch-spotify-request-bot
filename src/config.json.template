@@ -5,5 +5,6 @@
   "SPOTIFY_PLAYLIST_ID": "",
   "ADD_TO_QUEUE": true,
   "ADD_TO_PLAYLIST": true,
+  "COMMAND_PREFIX": "!request",
   "AUTH_SERVER_PORT": 8000
 }

@@ -1,7 +1,7 @@
 import tmi, { ChatUserstate } from 'tmi.js';
 import messageUtils from './messageUtils';
 import SpotifyService from './spotify.service';
-import { TWITCH_CHANNEL } from './config.json';
+import { TWITCH_CHANNEL, COMMAND_PREFIX } from './config.json';
 
 export default class TwitchService {
   constructor(private spotifyService: SpotifyService) {}
@@ -39,15 +39,24 @@ export default class TwitchService {
       return;
     }
 
-    if (msg.startsWith(messageUtils.SPOTIFY_LINK_START)) {
+    if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      const trackId = messageUtils.getTrackIdFromLink(msg);
-      if (trackId) {
-        await this.spotifyService.addTrack(trackId);
+      msg = msg.substring(`${COMMAND_PREFIX} `.length);
+      if (msg.startsWith(messageUtils.SPOTIFY_LINK_START)) {
+        this.handleSpotifyLink(msg);
       } else {
-        console.error('Unable to parse track ID from message');
+        console.log('Command used but no Spotify link provided');
       }
       console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+    }
+  }
+
+  private async handleSpotifyLink(message: string) {
+    const trackId = messageUtils.getTrackIdFromLink(message);
+    if (trackId) {
+      await this.spotifyService.addTrack(trackId);
+    } else {
+      console.error('Unable to parse track ID from message');
     }
   }
 }

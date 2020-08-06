@@ -31,7 +31,7 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
 
 ## Setup
 
-- Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/) 
+- Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
   and create a new application. The app can have whatever name and description you want
 - Once the app is created, click on Edit Settings and add a redirect URL of
   `http://localhost:8000/spotifyAuth` (NB: the port will be whatever you have
@@ -46,6 +46,7 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
     created in the Spotify developer dashboard
 - Run `yarn start` in the root directory of the project
 - Open the authorization link and give the app the require permissions
+- If you have ADD_TO_QUEUE toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
 - Type a Spotify link in the chat (ensuring the link is the first piece of text in the message)
   and make sure it shows up in your desired playlist (Spotify links should start
   with `https://open.spotify.com/track/`)

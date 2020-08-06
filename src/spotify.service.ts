@@ -28,14 +28,19 @@ export default class SpotifyService {
 
   public async authorize(onAuth: Function) {
     console.log('Authorizing with Spotify');
-    if (!this.spotifyAuth.refreshToken) {
-      console.log('No credentials found, performing new authorization');
-      await this.performNewAuthorization(onAuth);
-    } else {
-      console.log('Spotify credentials found');
-      this.spotifyApi.setAccessToken(this.spotifyAuth.accessToken);
-      this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
-      await onAuth();
+    try {
+      if (!this.spotifyAuth.refreshToken) {
+        console.log('No credentials found, performing new authorization');
+        await this.performNewAuthorization(onAuth);
+      } else {
+        console.log('Spotify credentials found');
+        this.spotifyApi.setAccessToken(this.spotifyAuth.accessToken);
+        this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
+        await onAuth();
+      }
+    } catch (e) {
+      console.error(`Error authorizing with Spotify ${e}`);
+      process.exit(-1);
     }
   }
 
@@ -64,26 +69,42 @@ export default class SpotifyService {
   }
 
   private async addToQueue(trackId: string, songName: string) {
-    // @ts-ignore
-    // TODO this is from a PR in the Spotify Web API Node package so doesn't show up in the @types
-    await this.spotifyApi.addTrackToQueue(this.createTrackURI(trackId));
-    console.log(`Added ${songName} to queue`);
+    try {
+      // @ts-ignore
+      // TODO this is from a PR in the Spotify Web API Node package so doesn't show up in the @types
+      await this.spotifyApi.addTrackToQueue(this.createTrackURI(trackId));
+      console.log(`Added ${songName} to queue`);
+    } catch (e) {
+      e = e as Error;
+      if (e.message === 'Not Found') {
+        console.error(
+          'Unable to add song to queue - Song may not exist or you may not have the Spotify client open and active'
+        );
+      } else {
+        console.error(`Error: Unable to add song to queue - ${e.message}`);
+      }
+    }
   }
 
   private async addToPlaylist(trackId: string, songName: string) {
-    if (config.SPOTIFY_PLAYLIST_ID) {
-      if (await this.doesPlaylistContainTrack(trackId)) {
-        console.log(`${songName} is already in playlist`);
+    try {
+      if (config.SPOTIFY_PLAYLIST_ID) {
+        if (await this.doesPlaylistContainTrack(trackId)) {
+          console.log(`${songName} is already in playlist`);
+        } else {
+          await this.spotifyApi.addTracksToPlaylist(
+            config.SPOTIFY_PLAYLIST_ID,
+            [this.createTrackURI(trackId)]
+          );
+          console.log(`Added ${songName} to playlist`);
+        }
       } else {
-        await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
-          this.createTrackURI(trackId),
-        ]);
-        console.log(`Added ${songName} to playlist`);
+        console.error(
+          'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
+        );
       }
-    } else {
-      console.error(
-        'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
-      );
+    } catch (e) {
+      console.error(`Error: Unable to add song to playlist - ${e}`);
     }
   }
 
@@ -138,22 +159,27 @@ export default class SpotifyService {
   }
 
   private async refreshToken(onAuth: Function) {
-    this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
-    this.spotifyApi.refreshAccessToken(async (err, data) => {
-      if (err) {
-        console.error(err);
-        process.exit(-1);
-      }
-      const accessToken = data.body['access_token'];
-      this.spotifyApi.setAccessToken(accessToken);
-      const expireTime = this.calculateExpireTime(data.body['expires_in']);
-      this.writeNewSpotifyAuth(
-        accessToken,
-        this.spotifyAuth.refreshToken,
-        expireTime
-      );
-      await onAuth();
-    });
+    try {
+      this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
+      this.spotifyApi.refreshAccessToken(async (err, data) => {
+        if (err) {
+          console.error(err);
+          process.exit(-1);
+        }
+        const accessToken = data.body['access_token'];
+        this.spotifyApi.setAccessToken(accessToken);
+        const expireTime = this.calculateExpireTime(data.body['expires_in']);
+        this.writeNewSpotifyAuth(
+          accessToken,
+          this.spotifyAuth.refreshToken,
+          expireTime
+        );
+        await onAuth();
+      });
+    } catch (e) {
+      console.error(`Error refreshing access token ${e}`);
+      process.exit(-1);
+    }
   }
 
   private calculateExpireTime(expiresIn: number): number {
