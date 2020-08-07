@@ -47,7 +47,6 @@ export default class TwitchService {
       } else {
         console.log('Command used but no Spotify link provided');
       }
-      console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
     }
   }
 
