@@ -1,5 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-node';
-import AuthServer from './auth-server';
+import { waitForCode } from './auth-server';
 import config from './config.json';
 import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
@@ -71,8 +71,8 @@ export default class SpotifyService {
   private async addToQueue(trackId: string, songName: string) {
     try {
       // @ts-ignore
-      // TODO this is from a PR in the Spotify Web API Node package so doesn't show up in the @types
-      await this.spotifyApi.addTrackToQueue(this.createTrackURI(trackId));
+      // TODO the Spotify Web API Node package hasn't published a new release with this yet so it doesn't show up in the @types
+      await this.spotifyApi.addToQueue(this.createTrackURI(trackId));
       console.log(`Added ${songName} to queue`);
     } catch (e) {
       e = e as Error;
@@ -108,9 +108,8 @@ export default class SpotifyService {
     }
   }
 
-  private createTrackURI(trackId: string): string {
-    return `spotify:track:${trackId}`;
-  }
+  private createTrackURI = (trackId: string): string =>
+    `spotify:track:${trackId}`;
 
   private async doesPlaylistContainTrack(trackId: string) {
     const playlistInfo = await this.spotifyApi.getPlaylist(
@@ -133,15 +132,14 @@ export default class SpotifyService {
       'playlist-modify-private',
     ];
 
-    const authorizeUrl = this.spotifyApi.createAuthorizeURL(scopes, '');
-    return authorizeUrl;
+    return this.spotifyApi.createAuthorizeURL(scopes, '');
   }
 
   private async performNewAuthorization(onAuth: Function) {
     const authUrl = this.getAuthorizationUrl();
     console.log('Click the following link and give this app permissions');
     console.log(authUrl);
-    new AuthServer().waitForCode((code: string) => {
+    waitForCode((code: string) => {
       this.spotifyApi.authorizationCodeGrant(code, async (error, data) => {
         if (error) {
           console.error(error);
@@ -182,9 +180,8 @@ export default class SpotifyService {
     }
   }
 
-  private calculateExpireTime(expiresIn: number): number {
-    return new Date().getTime() / 1000 + expiresIn;
-  }
+  private calculateExpireTime = (expiresIn: number): number =>
+    new Date().getTime() / 1000 + expiresIn;
 
   private writeNewSpotifyAuth(
     accessToken: string,

@@ -1,5 +1,5 @@
 import tmi, { ChatUserstate } from 'tmi.js';
-import messageUtils from './messageUtils';
+import {getTrackIdFromLink, SPOTIFY_LINK_START} from './messageUtils';
 import SpotifyService from './spotify.service';
 import { TWITCH_CHANNEL, COMMAND_PREFIX } from './config.json';
 
@@ -26,7 +26,7 @@ export default class TwitchService {
       ) => await this.handleMessage(target, userState, msg, self)
     );
 
-    twitchClient.connect();
+    await twitchClient.connect();
   }
 
   private async handleMessage(
@@ -42,16 +42,17 @@ export default class TwitchService {
     if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
       msg = msg.substring(`${COMMAND_PREFIX} `.length);
-      if (msg.startsWith(messageUtils.SPOTIFY_LINK_START)) {
-        this.handleSpotifyLink(msg);
+      if (msg.startsWith(SPOTIFY_LINK_START)) {
+        await this.handleSpotifyLink(msg);
       } else {
         console.log('Command used but no Spotify link provided');
       }
+      console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
     }
   }
 
   private async handleSpotifyLink(message: string) {
-    const trackId = messageUtils.getTrackIdFromLink(message);
+    const trackId = getTrackIdFromLink(message);
     if (trackId) {
       await this.spotifyService.addTrack(trackId);
     } else {
