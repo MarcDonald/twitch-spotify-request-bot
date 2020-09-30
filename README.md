@@ -23,10 +23,7 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
 - Some basic programming knowledge (running terminal commands and editing JSON
   files)
 - Node (developed and tested on 14.6.0 - your mileage may vary on other versions)
-- Yarn (NPM does not work as the Spotify Web API Node package has not merged in
-  [this](https://github.com/thelinmichael/spotify-web-api-node/pull/302/) PR yet
-  and we are using the Yarn syntax in our `package.json` for pulling in dependencies
-  built from PRs)
+- Yarn (NPM does not work)
 - A Spotify account
 
 ## Setup
@@ -45,10 +42,46 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
   - The Spotify client ID and secret are obtained from the application you
     created in the Spotify developer dashboard
 - Run `yarn start` in the root directory of the project
-- Open the authorization link and give the app the require permissions
+- Open the authorization link and give the app the required permissions
 - If you have ADD_TO_QUEUE toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
 - Type a Spotify link in the chat (ensuring the link is the first piece of text in the message)
   and make sure it shows up in your desired playlist (Spotify links should start
   with `https://open.spotify.com/track/`)
 - If there's a problem with Spotify authorization at any point, try deleting the
   `spotify-auth-store.json` file and starting the app again
+  
+## Open Source Libraries Used
+### [Spotify Web API Node](https://github.com/thelinmichael/spotify-web-api-node)
+Used for connecting to and performing actions using Spotify
+
+MIT License
+
+### [tmi.js](https://github.com/tmijs/tmi.js)
+Used for connecting to Twitch chat
+
+MIT License
+
+### [Express](https://github.com/expressjs/express)
+Used for creating a temporary local web server to retrieve the callback from the Spotify authorization
+
+MIT License
+
+### [Nodemon](https://github.com/remy/nodemon)
+Used to speed up development with hot reload
+
+MIT License
+
+### [Prettier](https://github.com/prettier/prettier)
+Used to make code pretty
+
+MIT License
+
+### [ts-node](https://github.com/TypeStrong/ts-node)
+Used to run TypeScript
+
+MIT License
+
+### [TypeScript](https://www.typescriptlang.org/)
+Used for strong typings
+
+Apache 2.0 License
