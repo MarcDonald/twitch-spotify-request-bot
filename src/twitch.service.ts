@@ -1,7 +1,7 @@
 import tmi, { ChatUserstate } from 'tmi.js';
 import {getTrackIdFromLink, SPOTIFY_LINK_START} from './messageUtils';
 import SpotifyService from './spotify.service';
-import { TWITCH_CHANNEL, COMMAND_PREFIX } from './config.json';
+import { TWITCH_CHANNEL, COMMAND_PREFIX, SUBSCRIBERS_ONLY } from './config.json';
 
 export default class TwitchService {
   constructor(private spotifyService: SpotifyService) {}
@@ -31,7 +31,7 @@ export default class TwitchService {
 
   private async handleMessage(
     _target: string,
-    _userState: ChatUserstate,
+    userState: ChatUserstate,
     msg: string,
     self: boolean
   ) {
@@ -40,6 +40,13 @@ export default class TwitchService {
     }
 
     if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
+
+      if(SUBSCRIBERS_ONLY) {
+        if (!userState.subscriber) {
+          return;
+        }
+      }
+
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
       msg = msg.substring(`${COMMAND_PREFIX} `.length);
       if (msg.startsWith(SPOTIFY_LINK_START)) {
