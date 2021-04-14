@@ -41,6 +41,10 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
     eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
   - The Spotify client ID and secret are obtained from the application you
     created in the Spotify developer dashboard
+  - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a 
+    [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in 
+    the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to 
+    use (must be the same account you generate the OAuth token for)
 - Run `yarn start` in the root directory of the project
 - Open the authorization link and give the app the required permissions
 - If you have ADD_TO_QUEUE toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
