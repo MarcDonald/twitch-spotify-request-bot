@@ -3,6 +3,7 @@ import { waitForCode } from './auth-server';
 import config from './config.json';
 import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
+import { response } from 'express';
 
 export default class SpotifyService {
   private spotifyApi: SpotifyWebApi;
@@ -44,19 +45,46 @@ export default class SpotifyService {
     }
   }
 
-  public async addTrack(trackId: string) {
-    try {
-      const addSong = async () => {
-        console.log(`Attempting to add ${trackId}`);
-        const songInfo = await this.spotifyApi.getTrack(trackId);
-        if (config.ADD_TO_QUEUE) {
+  public async addTrack(
+    trackId: string,
+    chatFeedback: (message: string) => void
+  ) {
+    const addSong = async () => {
+      console.log(`Attempting to add ${trackId}`);
+      const songInfo = await this.spotifyApi.getTrack(trackId);
+      if (config.ADD_TO_QUEUE) {
+        try {
           await this.addToQueue(trackId, songInfo?.body.name);
+          chatFeedback(`Success: ${songInfo?.body.name} added to queue`);
+        } catch (e) {
+          if (e.message === 'Not Found') {
+            console.error(
+              'Unable to add song to queue - Song may not exist or you may not have the Spotify client open and active'
+            );
+          } else {
+            console.error(`Error: Unable to add song to queue - ${e.message}`);
+          }
+          chatFeedback(`Fail: ${songInfo?.body.name} not added to queue`);
         }
-        if (config.ADD_TO_PLAYLIST) {
-          await this.addToPlaylist(trackId, songInfo?.body.name);
-        }
-      };
+      }
 
+      if (config.ADD_TO_PLAYLIST) {
+        try {
+          await this.addToPlaylist(trackId, songInfo?.body.name);
+          chatFeedback(`Success: ${songInfo?.body.name} added to playlist`);
+        } catch (e) {
+          if (e.message === 'Duplicate Track') {
+            chatFeedback(
+              `Fail (duplicate): ${songInfo?.body.name} already in the playlist`
+            );
+          } else {
+            chatFeedback(`Fail: ${songInfo?.body.name} not added to playlist`);
+          }
+        }
+      }
+    };
+
+    try {
       if (this.hasTokenExpired()) {
         console.log('Spotify token expired, refreshing...');
         await this.refreshToken(addSong);
@@ -65,46 +93,36 @@ export default class SpotifyService {
       }
     } catch (e) {
       console.error(`Error adding track ${e}`);
+      if (e.message === 'invalid id') {
+        chatFeedback('Fail (invalid ID): Link contains an invalid ID');
+      } else {
+        chatFeedback('Fail: Error occurred adding track');
+      }
     }
   }
 
   private async addToQueue(trackId: string, songName: string) {
-    try {
-      // @ts-ignore
-      // TODO the Spotify Web API Node package hasn't published a new release with this yet so it doesn't show up in the @types
-      await this.spotifyApi.addToQueue(this.createTrackURI(trackId));
-      console.log(`Added ${songName} to queue`);
-    } catch (e) {
-      e = e as Error;
-      if (e.message === 'Not Found') {
-        console.error(
-          'Unable to add song to queue - Song may not exist or you may not have the Spotify client open and active'
-        );
-      } else {
-        console.error(`Error: Unable to add song to queue - ${e.message}`);
-      }
-    }
+    // @ts-ignore
+    // TODO the Spotify Web API Node package hasn't published a new release with this yet so it doesn't show up in the @types
+    await this.spotifyApi.addToQueue(this.createTrackURI(trackId));
+    console.log(`Added ${songName} to queue`);
   }
 
   private async addToPlaylist(trackId: string, songName: string) {
-    try {
-      if (config.SPOTIFY_PLAYLIST_ID) {
-        if (await this.doesPlaylistContainTrack(trackId)) {
-          console.log(`${songName} is already in playlist`);
-        } else {
-          await this.spotifyApi.addTracksToPlaylist(
-            config.SPOTIFY_PLAYLIST_ID,
-            [this.createTrackURI(trackId)]
-          );
-          console.log(`Added ${songName} to playlist`);
-        }
+    if (config.SPOTIFY_PLAYLIST_ID) {
+      if (await this.doesPlaylistContainTrack(trackId)) {
+        console.log(`${songName} is already in the playlist`);
+        throw new Error('Duplicate Track');
       } else {
-        console.error(
-          'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
-        );
+        await this.spotifyApi.addTracksToPlaylist(config.SPOTIFY_PLAYLIST_ID, [
+          this.createTrackURI(trackId),
+        ]);
+        console.log(`Added ${songName} to playlist`);
       }
-    } catch (e) {
-      console.error(`Error: Unable to add song to playlist - ${e}`);
+    } else {
+      console.error(
+        'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
+      );
     }
   }
 

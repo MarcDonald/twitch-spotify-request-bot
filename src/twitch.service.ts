@@ -1,22 +1,58 @@
-import tmi, { ChatUserstate } from 'tmi.js';
-import {getTrackIdFromLink, SPOTIFY_LINK_START} from './messageUtils';
+import tmi, { ChatUserstate, client } from 'tmi.js';
+import { getTrackIdFromLink, SPOTIFY_LINK_START } from './messageUtils';
 import SpotifyService from './spotify.service';
-import { TWITCH_CHANNEL, COMMAND_PREFIX, SUBSCRIBERS_ONLY } from './config.json';
+import {
+  TWITCH_CHANNEL,
+  COMMAND_PREFIX,
+  SUBSCRIBERS_ONLY,
+  TWITCH_TOKEN,
+  BOT_USERNAME,
+  CHAT_FEEDBACK,
+} from './config.json';
+import e from 'express';
+
+interface TwitchOptions {
+  channels: string[];
+  identity?: {
+    username: string;
+    password: string;
+  };
+}
 
 export default class TwitchService {
+  private twitchClient: tmi.Client | null = null;
+
   constructor(private spotifyService: SpotifyService) {}
 
   public async connectToChat() {
-    const twitchOptions = {
+    let twitchOptions: TwitchOptions = {
       channels: [TWITCH_CHANNEL],
     };
-    const twitchClient = tmi.client(twitchOptions);
 
-    twitchClient.on('connected', (_addr: string, _port: number) =>
-      console.log(`Connected to ${TWITCH_CHANNEL}'s chat`)
-    );
+    if (CHAT_FEEDBACK) {
+      if (TWITCH_TOKEN && BOT_USERNAME) {
+        twitchOptions = {
+          ...twitchOptions,
+          identity: {
+            username: BOT_USERNAME,
+            password: TWITCH_TOKEN,
+          },
+        };
+      } else {
+        console.error(
+          'Error: Chat feedback enabled but there is no TWITCH_TOKEN or BOT_USERNAME in the config'
+        );
+        process.exit(-1);
+      }
+    }
 
-    twitchClient.on(
+    this.twitchClient = tmi.client(twitchOptions);
+
+    this.twitchClient.on('connected', (_addr: string, _port: number) => {
+      console.log(`Connected to ${TWITCH_CHANNEL}'s chat`);
+    });
+
+    this.twitchClient.on(
       'message',
       async (
         target: string,
@@ -26,11 +62,16 @@ export default class TwitchService {
       ) => await this.handleMessage(target, userState, msg, self)
     );
 
-    await twitchClient.connect();
+    try {
+      await this.twitchClient.connect();
+    } catch (e) {
+      console.error(`Error connecting to Twitch - ${e}`);
+      process.exit(-1);
+    }
   }
 
   private async handleMessage(
-    _target: string,
+    target: string,
     userState: ChatUserstate,
     msg: string,
     self: boolean
@@ -40,8 +81,7 @@ export default class TwitchService {
     }
 
     if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
-
-      if(SUBSCRIBERS_ONLY) {
+      if (SUBSCRIBERS_ONLY) {
         if (!userState.subscriber) {
           return;
         }
@@ -50,20 +90,33 @@ export default class TwitchService {
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
       msg = msg.substring(`${COMMAND_PREFIX} `.length);
       if (msg.startsWith(SPOTIFY_LINK_START)) {
-        await this.handleSpotifyLink(msg);
+        await this.handleSpotifyLink(msg, target);
       } else {
         console.log('Command used but no Spotify link provided');
+        this.chatFeedback(target, 'Fail (no link): No Spotify link detected');
       }
       console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
     }
   }
 
-  private async handleSpotifyLink(message: string) {
+  private async handleSpotifyLink(message: string, target: string) {
     const trackId = getTrackIdFromLink(message);
     if (trackId) {
-      await this.spotifyService.addTrack(trackId);
+      await this.spotifyService.addTrack(trackId, (chatMessage) => {
+        this.chatFeedback(target, chatMessage);
+      });
     } else {
       console.error('Unable to parse track ID from message');
+      this.chatFeedback(
+        target,
+        'Fail (invalid message): Unable to parse track ID from message'
+      );
+    }
+  }
+
+  private chatFeedback(target: string, message: string) {
+    if (CHAT_FEEDBACK) {
+      this.twitchClient?.say(target, message);
     }
   }
 }
