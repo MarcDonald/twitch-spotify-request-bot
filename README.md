@@ -41,7 +41,7 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
     eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
   - The Spotify client ID and secret are obtained from the application you
     created in the Spotify developer dashboard
-   - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a 
+  - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a 
     [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in 
     the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to 
     use (must be the same account you generate the OAuth token for)

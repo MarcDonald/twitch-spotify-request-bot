@@ -4,7 +4,7 @@ import 'dotenv/config'
 import env from 'env-smart';
 import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
-import process from 'process';
+import { response } from 'express';
 env.load();
 
 export default class SpotifyService {
