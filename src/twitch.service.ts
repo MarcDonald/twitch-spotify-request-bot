@@ -1,14 +1,9 @@
-import tmi, { ChatUserstate, client } from 'tmi.js';
-import { getTrackIdFromLink, SPOTIFY_LINK_START } from './messageUtils';
+import tmi, { ChatUserstate } from 'tmi.js';
+import {getTrackIdFromLink, SPOTIFY_LINK_START} from './messageUtils';
 import SpotifyService from './spotify.service';
-import {
-  TWITCH_CHANNEL,
-  COMMAND_PREFIX,
-  SUBSCRIBERS_ONLY,
-  TWITCH_TOKEN,
-  BOT_USERNAME,
-  CHAT_FEEDBACK,
-} from './config.json';
+import 'dotenv/config'
+import env from 'env-smart';
+env.load();
 import e from 'express';
 
 interface TwitchOptions {
@@ -26,16 +21,16 @@ export default class TwitchService {
 
   public async connectToChat() {
     let twitchOptions: TwitchOptions = {
-      channels: [TWITCH_CHANNEL],
+      channels: [process.env.TWITCH_CHANNEL],
     };
 
-    if (CHAT_FEEDBACK) {
-      if (TWITCH_TOKEN && BOT_USERNAME) {
+    if (process.env.CHAT_FEEDBACK) {
+      if (process.env.TWITCH_TOKEN && process.env.BOT_USERNAME) {
         twitchOptions = {
           ...twitchOptions,
           identity: {
-            username: BOT_USERNAME,
-            password: TWITCH_TOKEN,
+            username: process.env.BOT_USERNAME,
+            password: process.env.TWITCH_TOKEN,
           },
         };
       } else {
@@ -49,7 +44,7 @@ export default class TwitchService {
     this.twitchClient = tmi.client(twitchOptions);
 
     this.twitchClient.on('connected', (_addr: string, _port: number) => {
-      console.log(`Connected to ${TWITCH_CHANNEL}'s chat`);
+      console.log(`Connected to ${process.env.TWITCH_CHANNEL}'s chat`);
     });
 
     this.twitchClient.on(
@@ -80,15 +75,15 @@ export default class TwitchService {
       return;
     }
 
-    if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
-      if (SUBSCRIBERS_ONLY) {
+    if (process.env.COMMAND_PREFIX && msg.startsWith(process.env.COMMAND_PREFIX)) {
+      if (process.env.SUBSCRIBERS_ONLY) {
         if (!userState.subscriber) {
           return;
         }
       }
 
       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      msg = msg.substring(`${COMMAND_PREFIX} `.length);
+      msg = msg.substring(`${process.env.COMMAND_PREFIX} `.length);
       if (msg.startsWith(SPOTIFY_LINK_START)) {
         await this.handleSpotifyLink(msg, target);
       } else {
@@ -115,7 +110,7 @@ export default class TwitchService {
   }
 
   private chatFeedback(target: string, message: string) {
-    if (CHAT_FEEDBACK) {
+    if (process.env.CHAT_FEEDBACK) {
       this.twitchClient?.say(target, message);
     }
   }
