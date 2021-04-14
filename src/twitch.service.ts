@@ -1,10 +1,10 @@
-import tmi, { ChatUserstate } from 'tmi.js';
-import {getTrackIdFromLink, SPOTIFY_LINK_START} from './messageUtils';
+import tmi, { ChatUserstate, client } from 'tmi.js';
+import { getTrackIdFromLink, SPOTIFY_LINK_START } from './messageUtils';
 import SpotifyService from './spotify.service';
 import 'dotenv/config'
 import env from 'env-smart';
-env.load();
 import e from 'express';
+env.load();
 
 interface TwitchOptions {
   channels: string[];
