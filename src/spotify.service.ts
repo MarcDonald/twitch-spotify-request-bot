@@ -93,7 +93,7 @@ export default class SpotifyService {
       }
     } catch (e) {
       console.error(`Error adding track ${e}`);
-      if (e.message === 'invalid id') {
+      if (e.body?.error?.message === 'invalid id') {
         chatFeedback('Fail (invalid ID): Link contains an invalid ID');
       } else {
         chatFeedback('Fail: Error occurred adding track');
@@ -102,8 +102,6 @@ export default class SpotifyService {
   }
 
   private async addToQueue(trackId: string, songName: string) {
-    // @ts-ignore
-    // TODO the Spotify Web API Node package hasn't published a new release with this yet so it doesn't show up in the @types
     await this.spotifyApi.addToQueue(this.createTrackURI(trackId));
     console.log(`Added ${songName} to queue`);
   }
