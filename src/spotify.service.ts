@@ -1,12 +1,25 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 import { waitForCode } from './auth-server';
-import 'dotenv/config'
-import env from 'env-smart';
+import 'dotenv/config';
 import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
-import { response } from 'express';
+import * as path from 'path';
+import dotenv from 'dotenv';
+import env from 'env-smart';
+
+dotenv.config({
+  path: path.join(__dirname, '../.env'),
+});
 env.load();
-const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, AUTH_SERVER_PORT, ADD_TO_QUEUE, ADD_TO_PLAYLIST, SPOTIFY_PLAYLIST_ID} = process.env
+
+const {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET,
+  AUTH_SERVER_PORT,
+  ADD_TO_QUEUE,
+  ADD_TO_PLAYLIST,
+  SPOTIFY_PLAYLIST_ID,
+} = process.env;
 
 export default class SpotifyService {
   private spotifyApi: SpotifyWebApi;

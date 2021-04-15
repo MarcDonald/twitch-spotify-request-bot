@@ -41,9 +41,9 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
     eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
   - The Spotify client ID and secret are obtained from the application you
     created in the Spotify developer dashboard
-  - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a 
-    [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in 
-    the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to 
+  - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a
+    [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
+    the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
     use (must be the same account you generate the OAuth token for)
 - Run `yarn start` (or `npm start` if you are using NPM) in the root directory of the project
 - Open the authorization link and give the app the required permissions
@@ -53,39 +53,47 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
   with `https://open.spotify.com/track/`)
 - If there's a problem with Spotify authorization at any point, try deleting the
   `spotify-auth-store.json` file and starting the app again
-  
+
 ## Open Source Libraries Used
+
 ### [Spotify Web API Node](https://github.com/thelinmichael/spotify-web-api-node)
+
 Used for connecting to and performing actions using Spotify
 
 MIT License
 
 ### [tmi.js](https://github.com/tmijs/tmi.js)
+
 Used for connecting to Twitch chat
 
 MIT License
 
 ### [Express](https://github.com/expressjs/express)
+
 Used for creating a temporary local web server to retrieve the callback from the Spotify authorization
 
 MIT License
 
 ### [Nodemon](https://github.com/remy/nodemon)
+
 Used to speed up development with hot reload
 
 MIT License
 
 ### [Prettier](https://github.com/prettier/prettier)
+
 Used to make code pretty
 
 MIT License
 
 ### [ts-node](https://github.com/TypeStrong/ts-node)
+
 Used to run TypeScript
 
 MIT License
 
 ### [TypeScript](https://www.typescriptlang.org/)
+
 Used for strong typings
 
 Apache 2.0 License
