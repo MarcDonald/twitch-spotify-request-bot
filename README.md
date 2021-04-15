@@ -33,7 +33,6 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
 - Once the app is created, click on Edit Settings and add a redirect URL of
   `http://localhost:8000/spotifyAuth` (NB: the port will be whatever you have
   set as the `AUTH_SERVER_PORT` in the `./.env` file, by default it is 8000)
-- Run `yarn` (or `npm install` if you are using NPM)
 - Create a `./.env` file based on `./.env.template` file and fill
   in the fields
   - The playlist ID can be found by right clicking on the playlist ->
@@ -45,7 +44,8 @@ this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjM
     [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
     the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
     use (must be the same account you generate the OAuth token for)
-- Run `yarn start` (or `npm start` if you are using NPM) in the root directory of the project
+- Run `./build.sh` This will compile from source using `npm` and then build OS-native binaries using `pkg`
+- Run the freshly compiled binary for your OS in `./dist`.
 - Open the authorization link and give the app the required permissions
 - If you have `ADD_TO_QUEUE` toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
 - Type a Spotify link in the chat (ensuring the link is the first piece of text in the message)
