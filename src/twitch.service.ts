@@ -1,10 +1,23 @@
 import tmi, { ChatUserstate, client } from 'tmi.js';
 import { getTrackIdFromLink, SPOTIFY_LINK_START } from './messageUtils';
 import SpotifyService from './spotify.service';
-import 'dotenv/config'
+import * as path from 'path';
+import dotenv from 'dotenv';
 import env from 'env-smart';
+
+dotenv.config({
+  path: path.join(__dirname, '../.env'),
+});
 env.load();
-const { TWITCH_CHANNEL, COMMAND_PREFIX, SUBSCRIBERS_ONLY, TWITCH_TOKEN, BOT_USERNAME, CHAT_FEEDBACK } = process.env
+
+const {
+  TWITCH_CHANNEL,
+  COMMAND_PREFIX,
+  SUBSCRIBERS_ONLY,
+  TWITCH_TOKEN,
+  BOT_USERNAME,
+  CHAT_FEEDBACK,
+} = process.env;
 
 interface TwitchOptions {
   channels: string[];

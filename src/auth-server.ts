@@ -1,15 +1,22 @@
 import express from 'express';
-import 'dotenv/config'
+import 'dotenv/config';
+import * as path from 'path';
+import dotenv from 'dotenv';
 import env from 'env-smart';
+
+dotenv.config({
+  path: path.join(__dirname, '../.env'),
+});
 env.load();
-const { AUTH_SERVER_PORT } = process.env
+
+const { AUTH_SERVER_PORT } = process.env;
 
 export const waitForCode = (onCodeReceived: Function) => {
   const app = express();
   const port = AUTH_SERVER_PORT;
 
   const server = app.listen(port, (err: Error) => {
-    if(err) return console.error(err);
+    if (err) return console.error(err);
     return console.log(`Auth server is listening on ${port}`);
   });
 
