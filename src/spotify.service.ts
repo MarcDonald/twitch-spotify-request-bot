@@ -6,6 +6,7 @@ import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
 import { response } from 'express';
 env.load();
+const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, AUTH_SERVER_PORT, ADD_TO_QUEUE, ADD_TO_PLAYLIST, SPOTIFY_PLAYLIST_ID} = process.env
 
 export default class SpotifyService {
   private spotifyApi: SpotifyWebApi;
@@ -13,9 +14,9 @@ export default class SpotifyService {
 
   constructor() {
     this.spotifyApi = new SpotifyWebApi({
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-      redirectUri: `http://localhost:${process.env.AUTH_SERVER_PORT}/spotifyAuth`,
+      clientId: SPOTIFY_CLIENT_ID,
+      clientSecret: SPOTIFY_CLIENT_SECRET,
+      redirectUri: `http://localhost:${AUTH_SERVER_PORT}/spotifyAuth`,
     });
 
     if (!fs.existsSync('./spotify-auth-store.json')) {
@@ -54,7 +55,7 @@ export default class SpotifyService {
     const addSong = async () => {
       console.log(`Attempting to add ${trackId}`);
       const songInfo = await this.spotifyApi.getTrack(trackId);
-      if (process.env.ADD_TO_QUEUE) {
+      if (ADD_TO_QUEUE) {
         try {
           await this.addToQueue(trackId, songInfo?.body.name);
           chatFeedback(`Success: ${songInfo?.body.name} added to queue`);
@@ -70,7 +71,7 @@ export default class SpotifyService {
         }
       }
 
-      if (process.env.ADD_TO_PLAYLIST) {
+      if (ADD_TO_PLAYLIST) {
         try {
           await this.addToPlaylist(trackId, songInfo?.body.name);
           chatFeedback(`Success: ${songInfo?.body.name} added to playlist`);
@@ -109,12 +110,12 @@ export default class SpotifyService {
   }
 
   private async addToPlaylist(trackId: string, songName: string) {
-    if (process.env.SPOTIFY_PLAYLIST_ID) {
+    if (SPOTIFY_PLAYLIST_ID) {
       if (await this.doesPlaylistContainTrack(trackId)) {
         console.log(`${songName} is already in the playlist`);
         throw new Error('Duplicate Track');
       } else {
-        await this.spotifyApi.addTracksToPlaylist(process.env.SPOTIFY_PLAYLIST_ID, [
+        await this.spotifyApi.addTracksToPlaylist(SPOTIFY_PLAYLIST_ID, [
           this.createTrackURI(trackId),
         ]);
         console.log(`Added ${songName} to playlist`);
@@ -131,7 +132,7 @@ export default class SpotifyService {
 
   private async doesPlaylistContainTrack(trackId: string) {
     const playlistInfo = await this.spotifyApi.getPlaylist(
-      process.env.SPOTIFY_PLAYLIST_ID!
+      SPOTIFY_PLAYLIST_ID!
     );
 
     let i;
