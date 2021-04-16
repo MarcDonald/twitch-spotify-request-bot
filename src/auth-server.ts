@@ -1,13 +1,8 @@
 import express from 'express';
 import 'dotenv/config';
-import * as path from 'path';
-import dotenv from 'dotenv';
 import env from 'env-smart';
-
-dotenv.config({
-  path: path.join(__dirname, '../.env'),
-});
-env.load();
+import { envDirectory } from './constants';
+env.load({ directory: envDirectory });
 
 const { AUTH_SERVER_PORT } = process.env;
 

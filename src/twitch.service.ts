@@ -1,14 +1,9 @@
-import tmi, { ChatUserstate, client } from 'tmi.js';
+import tmi, { ChatUserstate } from 'tmi.js';
 import { getTrackIdFromLink, SPOTIFY_LINK_START } from './messageUtils';
 import SpotifyService from './spotify.service';
-import * as path from 'path';
-import dotenv from 'dotenv';
 import env from 'env-smart';
-
-dotenv.config({
-  path: path.join(__dirname, '../.env'),
-});
-env.load();
+import { envDirectory } from './constants';
+env.load({ directory: envDirectory });
 
 const {
   TWITCH_CHANNEL,

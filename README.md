@@ -9,50 +9,58 @@ your queue. The Spotify link must be at the start of the message in order to be 
 ✔️ Message that WOULD be picked up:
 
 ```
-https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ pls play this, it's a bop
+!prefix https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ pls play this, it's a bop
 ```
 
 ❌ Message that WOULD NOT be picked up:
 
 ```
-this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ
+!prefix this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ
 ```
 
 ## Prerequisites
 
-- Some basic programming knowledge (running terminal commands and editing JSON
+- Some basic programming knowledge (running terminal commands and editing `.env`
   files)
-- Node (developed and tested on 14.6.0 - your mileage may vary on other versions)
-- Yarn or NPM
+- [Node](https://nodejs.org/en/) (developed and tested on 14.6.0 - your mileage may vary on other versions)
 - A Spotify account
 
 ## Setup
 
-- Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
-  and create a new application. The app can have whatever name and description you want
-- Once the app is created, click on Edit Settings and add a redirect URL of
-  `http://localhost:8000/spotifyAuth` (NB: the port will be whatever you have
-  set as the `AUTH_SERVER_PORT` in the `./.env` file, by default it is 8000)
-- Create a `./.env` file based on `./.env.template` file and fill
-  in the fields
-  - The playlist ID can be found by right clicking on the playlist ->
-    clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
-    eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
-  - The Spotify client ID and secret are obtained from the application you
-    created in the Spotify developer dashboard
-  - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a
-    [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
-    the `config.json` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
-    use (must be the same account you generate the OAuth token for)
-- Run `./build.sh` This will compile from source using `npm` and then build OS-native binaries using `pkg`
-- Run the freshly compiled binary for your OS in `./dist`.
-- Open the authorization link and give the app the required permissions
-- If you have `ADD_TO_QUEUE` toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
-- Type a Spotify link in the chat (ensuring the link is the first piece of text in the message)
-  and make sure it shows up in your desired playlist (Spotify links should start
-  with `https://open.spotify.com/track/`)
-- If there's a problem with Spotify authorization at any point, try deleting the
-  `spotify-auth-store.json` file and starting the app again
+1. Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
+   and create a new application. The app can have whatever name and description you want
+2. Once the app is created, click on Edit Settings and add a redirect URL of
+   `http://localhost:8000/spotifyAuth` (NB: the port will be whatever you have
+   set as the `AUTH_SERVER_PORT` in the `./.env` file, by default it is 8000)
+3. Create a `./.env` file based on `./.env.template` file and fill
+   in the fields
+
+- The playlist ID can be found by right clicking on the playlist ->
+  clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
+  eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
+- The Spotify client ID and secret are obtained from the application you
+  created in the Spotify developer dashboard
+- If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a
+  [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
+  the `.env` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
+  use (must be the same account you generate the OAuth token for)
+
+4. Run `bash ./build.sh`. This will automatically compile from source using `npm` and then build OS-native binaries using `pkg`
+5. Run the freshly compiled binary for your OS in `./dist`.
+6. Open the authorization link and give the app the required permissions
+7. If you have `ADD_TO_QUEUE` toggled on, ensure you have the Spotify client open and that it is active (i.e. is playing a song)
+8. Type a Spotify link in the chat (ensuring the link is the first piece of text in the message)
+   and make sure it shows up in your desired playlist (Spotify links should start
+   with `https://open.spotify.com/track/`)
+9. If there's a problem with Spotify authorization at any point, try deleting the
+   `spotify-auth-store.json` file and starting the app again
+
+### Note
+
+If you would prefer to launch the bot without generating a binary file you can replace steps 4 and 5 the following
+
+- Run `npm install` or `yarn`
+- Run `npm start` or `yarn start`
 
 ## Open Source Libraries Used
 
@@ -97,3 +105,25 @@ MIT License
 Used for strong typings
 
 Apache 2.0 License
+
+### [dotenv](https://github.com/motdotla/dotenv)
+
+Used to load environment variables
+
+BSD 2-Clause "Simplified" License
+
+### [env-smart](https://github.com/jessety/env-smart)
+
+Used to set types for environment variables
+
+MIT License
+
+### [pkg](https://github.com/vercel/pkg)
+
+Used to create platform binaries
+
+MIT License
+
+## Contributors
+
+Checkout the [Contributors file](./CONTRIBUTORS.md) to see everyone who has helped out with the bot

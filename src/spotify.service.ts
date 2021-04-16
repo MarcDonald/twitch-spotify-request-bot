@@ -3,14 +3,9 @@ import { waitForCode } from './auth-server';
 import 'dotenv/config';
 import SpotifyAuth from './spotify-auth';
 import fs from 'fs';
-import * as path from 'path';
-import dotenv from 'dotenv';
 import env from 'env-smart';
-
-dotenv.config({
-  path: path.join(__dirname, '../.env'),
-});
-env.load();
+import { envDirectory } from './constants';
+env.load({ directory: envDirectory });
 
 const {
   SPOTIFY_CLIENT_ID,
@@ -170,8 +165,10 @@ export default class SpotifyService {
 
   private async performNewAuthorization(onAuth: Function) {
     const authUrl = this.getAuthorizationUrl();
-    console.log('Click the following link and give this app permissions');
-    console.log(authUrl);
+    console.log(
+      'Click or go to the following link and give this app permissions'
+    );
+    console.log(`\n${authUrl}\n`);
     waitForCode((code: string) => {
       this.spotifyApi.authorizationCodeGrant(code, async (error, data) => {
         if (error) {
