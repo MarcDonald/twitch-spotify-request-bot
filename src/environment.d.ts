@@ -13,6 +13,7 @@ declare global {
       SUBSCRIBERS_ONLY: boolean;
       COMMAND_PREFIX: string;
       AUTH_SERVER_PORT: number;
+      HOST: string;
     }
   }
 }

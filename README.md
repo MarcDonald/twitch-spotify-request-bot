@@ -17,8 +17,27 @@ your queue. The Spotify link must be at the start of the message in order to be 
 ```
 !prefix this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ
 ```
+## Deploy
 
-## Prerequisites
+Click here to deploy your bot to heroku   
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MarcDonald/twitch-spotify-request-bot)
+
+1. Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
+   and create a new application. The app can have whatever name and description you want
+2. You just need to fill the required information in the Heroku page
+3. Wait the build process and then click on 'View' or 'Open app'
+
+- The playlist ID can be found by right clicking on the playlist ->
+  clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
+  eg. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
+- The Spotify client ID and secret are obtained from the application you
+  created in the Spotify developer dashboard
+- If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a
+  [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
+  the `.env` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
+  use (must be the same account you generate the OAuth token for)
+## Prerequisites for local
 
 - Some basic programming knowledge (running terminal commands and editing `.env`
   files)
