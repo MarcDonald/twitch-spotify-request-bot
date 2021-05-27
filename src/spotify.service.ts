@@ -14,6 +14,7 @@ const {
   ADD_TO_QUEUE,
   ADD_TO_PLAYLIST,
   SPOTIFY_PLAYLIST_ID,
+  HOST,
 } = process.env;
 
 export default class SpotifyService {
@@ -21,10 +22,16 @@ export default class SpotifyService {
   private spotifyAuth: SpotifyAuth;
 
   constructor() {
+    let redirectUri;
+    if (process.env.PORT) {
+      redirectUri = `${HOST}/spotifyAuth`;
+    } else {
+      redirectUri = `${HOST}:${AUTH_SERVER_PORT}/spotifyAuth`
+    }
     this.spotifyApi = new SpotifyWebApi({
       clientId: SPOTIFY_CLIENT_ID,
       clientSecret: SPOTIFY_CLIENT_SECRET,
-      redirectUri: `http://localhost:${AUTH_SERVER_PORT}/spotifyAuth`,
+      redirectUri: `${redirectUri}`,
     });
 
     if (!fs.existsSync('./spotify-auth-store.json')) {
@@ -152,7 +159,7 @@ export default class SpotifyService {
     return false;
   }
 
-  private getAuthorizationUrl() {
+  public getAuthorizationUrl() {
     const scopes = [
       'user-modify-playback-state',
       'playlist-read-private',
