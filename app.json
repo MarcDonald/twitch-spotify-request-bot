@@ -1,7 +1,7 @@
 {
   "name": "twitch-spotify-request-bot",
   "description": "This is a bot that listens to the chat of a given Twitch stream for messages with a Spotify song link in them and then adds that song to a playlist and/or your queue.",
-  "logo": "https://github.com/MarcDonald/twitch-spotify-request-bot/images/twitch-spotify-request-bot.png?raw=true",
+  "logo": "https://github.com/MarcDonald/twitch-spotify-request-bot/blob/master/images/twitch-spotify-request-bot.png?raw=true",
   "repository": "https://github.com/MarcDonald/twitch-spotify-request-bot",
   "buildpacks": [
     {
