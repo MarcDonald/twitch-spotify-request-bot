@@ -17,9 +17,10 @@ your queue. The Spotify link must be at the start of the message in order to be 
 ```
 !prefix this is a bop can you please play this https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=x-_FFgqBRB20mzW_lM7kDQ
 ```
+
 ## Deploy
 
-Click here to deploy your bot to heroku   
+Click here to deploy your bot to heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MarcDonald/twitch-spotify-request-bot)
 
@@ -39,6 +40,7 @@ Click here to deploy your bot to heroku
   [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in
   the `.env` file. Also set the `BOT_USERNAME` field to the name of the account you wish to
   use (must be the same account you generate the OAuth token for)
+
 ## Prerequisites for local
 
 - Some basic programming knowledge (running terminal commands and editing `.env`
@@ -81,7 +83,7 @@ Click here to deploy your bot to heroku
 If you would prefer to launch the bot without generating a binary file you can replace steps 4 and 5 the following
 
 - Run `npm install` or `yarn`
-- Run `npm start` or `yarn start`
+- Run `npm run build && npm start` or `yarn build && yarn start`
 
 ## Open Source Libraries Used
 

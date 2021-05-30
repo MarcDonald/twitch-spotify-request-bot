@@ -1,6 +1,6 @@
 {
   "name": "twitch-spotify-request",
-  "version": "3.1.0",
+  "version": "4.2.0",
   "description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
   "main": "index.ts",
   "scripts": {

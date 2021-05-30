@@ -3,6 +3,11 @@
 - [IvanGodinez21](https://github.com/IvanGodinez21)
 
   - Converted config loading to use environment variables (#9)
+  - Added Heroku deploy config along with [Josué B. Iglesias](https://github.com/JosueIglesias) (#12)
+
+- [Josué B. Iglesias](https://github.com/JosueIglesias)
+
+  - Added Heroku deploy config along with [IvanGodinez21](https://github.com/IvanGodinez21) (#12)
 
 - [Trithir](https://github.com/Trithir)
 
