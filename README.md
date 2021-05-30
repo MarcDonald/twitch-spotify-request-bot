@@ -26,7 +26,9 @@ Click here to deploy your bot to heroku
 1. Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
    and create a new application. The app can have whatever name and description you want
 2. You just need to fill the required information in the Heroku page
-3. Wait the build process and then click on 'View' or 'Open app'
+3. Once the app is created in Heroku, go back to Spotify developer dashboard, select your app and then click on Edit Settings and add a redirect URL of
+   `https://app-name.herokuapp.com/spotifyAuth` (NB: Same URL that you declared in HOST from the step 2. Just add the `/spotifyAuth` at the end)
+4. Wait the build process and then click on 'View' or 'Open app' in Heroku page
 
 - The playlist ID can be found by right clicking on the playlist ->
   clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
