@@ -1,6 +1,6 @@
 {
   "name": "twitch-spotify-request",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
   "main": "index.ts",
   "scripts": {
@@ -14,26 +14,26 @@
     "lint:fix": "prettier --write 'src/**/*{.js,.ts}' && prettier --write '*.md'"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">=14.x"
   },
   "author": "Marc Donald",
   "license": "MIT",
   "dependencies": {
-    "@types/spotify-web-api-node": "^5.0.2",
-    "@types/tmi.js": "^1.4.0",
-    "dotenv": "^8.2.0",
-    "env-smart": "^2.2.0",
-    "express": "^4.17.1",
-    "fs": "^0.0.1-security",
+    "dotenv": "8.6.0",
+    "env-smart": "2.2.0",
+    "express": "4.17.1",
+    "fs": "0.0.1-security",
     "spotify-web-api-node": "5.0.2",
-    "tmi.js": "^1.8.3"
+    "tmi.js": "1.8.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.7",
-    "@types/node": "^14.0.27",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
+    "@types/express": "4.17.12",
+    "@types/node": "14.17.1",
+    "@types/spotify-web-api-node": "5.0.2",
+    "@types/tmi.js": "1.7.1",
+    "nodemon": "2.0.13",
+    "prettier": "2.0.5",
+    "ts-node": "8.10.2",
+    "typescript": "3.9.7"
   }
 }
