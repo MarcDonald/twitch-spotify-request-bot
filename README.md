@@ -158,3 +158,8 @@ MIT License
 ## Contributors
 
 Checkout the [Contributors file](./CONTRIBUTORS.md) to see everyone who has helped out with the bot
+
+### [Material Design Icons](https://github.com/google/material-design-icons)
+Used for the icon
+
+Apache 2 License
