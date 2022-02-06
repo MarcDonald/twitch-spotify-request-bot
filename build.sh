@@ -12,14 +12,14 @@ ENV=./.env
 echo "Checking if .env file exists...";
 sleep 2
 	
-echo "Initializing npm...";
-npm install
+echo "Initializing yarn...";
+yarn install --frozen-lockfile
 
 if [ -f "$ENV" ]; then
 
 	clear >$(tty)
 	echo "Compiling source to JS...";
-	npm run build
+	yarn run build
 	
 else
 	clear >$(tty)
@@ -31,7 +31,7 @@ fi
 
 clear >$(tty)
 echo "Building OS-native binaries from JS...";
-pkg ./build/index.js --targets node14-win-x64,node14-macos-x64,node14-linux-x64 --out-path ./dist/
+pkg ./dist/index.js --targets node14-win-x64,node14-macos-x64,node14-linux-x64 --out-path ./dist/
 
 clear >$(tty)
 echo "Cleaning up...";

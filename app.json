@@ -8,7 +8,7 @@
       "url": "heroku/nodejs"
     }
   ],
-  "website": "https://marcdonald.com",  
+  "website": "https://marcdonald.com",
   "keywords": [
     "spotify-playlist",
     "spotify",
@@ -27,47 +27,47 @@
       "description": "Username of the Twitch Channel (Just the username)",
       "required": true
     },
-    "SPOTIFY_CLIENT_ID":{
+    "SPOTIFY_CLIENT_ID": {
       "description": "Your client ID from you app (https://developer.spotify.com/dashboard/applications)",
       "required": true
     },
-    "SPOTIFY_CLIENT_SECRET":{
+    "SPOTIFY_CLIENT_SECRET": {
       "description": "Your client Secret from you app (https://developer.spotify.com/dashboard/applications)",
       "required": true
     },
-    "SPOTIFY_PLAYLIST_ID":{
+    "SPOTIFY_PLAYLIST_ID": {
       "description": "Your Spotify playlist ID (Just the id from a URI, example: spotify:playlist:id)",
       "required": false
     },
-    "TWITCH_TOKEN":{
+    "TWITCH_TOKEN": {
       "description": "The token from your Twitch BOT",
       "required": false
     },
-    "BOT_USERNAME":{
+    "BOT_USERNAME": {
       "description": "The username of your Twitch BOT",
       "required": false
     },
-    "CHAT_FEEDBACK":{
+    "CHAT_FEEDBACK": {
       "description": "Enable or disable chat feedback | Use: true or false",
       "required": false
     },
-    "ADD_TO_QUEUE":{
+    "ADD_TO_QUEUE": {
       "description": "Enable or disable adding tracks to the current Spotify queue | Use: true or false",
       "required": false
     },
-    "ADD_TO_PLAYLIST":{
+    "ADD_TO_PLAYLIST": {
       "description": "Enable or disable adding tracks to the playlist | Use: true or false",
       "required": false
     },
-    "SUBSCRIBERS_ONLY":{
+    "SUBSCRIBERS_ONLY": {
       "description": "Enable or disable subscriber only mode | Use: true or false",
       "required": false
     },
-    "COMMAND_PREFIX":{
+    "COMMAND_PREFIX": {
       "description": "Your prefix",
       "required": true
     },
-    "HOST":{
+    "HOST": {
       "description": "https://app-name.herokuapp.com (Replace 'app-name' same as your declaration in 'App name' (First form item) or the 'Open app' button will not work",
       "required": true
     }

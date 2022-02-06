@@ -9,7 +9,6 @@ export const getTrackIdFromLink = (link: string): string | null => {
     } else if (startOfId > 0 && endOfId === -1) {
       return link.substring(startOfId);
     } else {
-      // noinspection ExceptionCaughtLocallyJS
       throw Error('No track ID found in URL');
     }
   } catch (e) {
