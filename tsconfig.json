@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "lib": ["es6"],
-    "allowJs": true,
+    "allowJs": false,
     "outDir": "dist",
     "strict": true,
     "noImplicitAny": true,
@@ -11,7 +11,11 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src/"
+    "baseUrl": "./src/",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
+  "include": ["**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }

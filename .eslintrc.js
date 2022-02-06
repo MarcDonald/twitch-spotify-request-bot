@@ -13,20 +13,21 @@ module.exports = {
   extends: ['eslint:recommended'],
   overrides: [
     {
-      files: ['**/*.ts', '**/*.tsx'],
-      parser: '@typescript-eslint/parser',
+      files: ['**/*.ts'],
       settings: {
         'import/resolver': {
+          typescript: {},
           node: {
-            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.js', '.ts'],
           },
         },
       },
-      env: {
-        browser: true,
-        node: true,
-        es6: true,
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: './',
       },
+      plugins: ['@typescript-eslint', 'import'],
       extends: [
         'eslint:recommended',
         'plugin:import/errors',
@@ -35,6 +36,11 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
       ],
+      env: {
+        browser: true,
+        node: true,
+        es6: true,
+      },
       rules: {
         'no-restricted-imports': ['error'],
         'linebreak-style': ['error', 'unix'],

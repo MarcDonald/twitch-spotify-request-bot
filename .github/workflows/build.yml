@@ -1,4 +1,4 @@
-name: 'Build'
+name: 'Verify Commit'
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  verify:
+  verify-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
