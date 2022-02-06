@@ -1,6 +1,7 @@
+import * as path from 'path';
+
 import SpotifyService from './spotify.service';
 import TwitchService from './twitch.service';
-import * as path from 'path';
 
 // Required for pkg to recognise these files as assets
 path.join(__dirname, '../.env');

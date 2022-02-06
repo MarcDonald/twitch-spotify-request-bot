@@ -1,10 +1,14 @@
-import SpotifyWebApi from 'spotify-web-api-node';
-import { waitForCode } from './auth-server';
 import 'dotenv/config';
-import SpotifyAuth from './spotify-auth';
+
 import fs from 'fs';
+
 import env from 'env-smart';
+import SpotifyWebApi from 'spotify-web-api-node';
+
+import { waitForCode } from './auth-server';
 import { envDirectory } from './constants';
+import SpotifyAuth from './spotify-auth';
+
 env.load({ directory: envDirectory });
 
 const {
@@ -26,7 +30,7 @@ export default class SpotifyService {
     if (process.env.PORT) {
       redirectUri = `${HOST}/spotifyAuth`;
     } else {
-      redirectUri = `${HOST}:${AUTH_SERVER_PORT}/spotifyAuth`
+      redirectUri = `${HOST}:${AUTH_SERVER_PORT}/spotifyAuth`;
     }
     this.spotifyApi = new SpotifyWebApi({
       clientId: SPOTIFY_CLIENT_ID,
@@ -45,7 +49,7 @@ export default class SpotifyService {
     );
   }
 
-  public async authorize(onAuth: Function) {
+  public async authorize(onAuth: () => void) {
     console.log('Authorizing with Spotify');
     try {
       if (!this.spotifyAuth.refreshToken) {
@@ -126,7 +130,7 @@ export default class SpotifyService {
 
   private async addToPlaylist(trackId: string, songName: string) {
     if (SPOTIFY_PLAYLIST_ID) {
-      if (await this.doesPlaylistContainTrack(trackId)) {
+      if (await this.doesPlaylistContainTrack(trackId, SPOTIFY_PLAYLIST_ID)) {
         console.log(`${songName} is already in the playlist`);
         throw new Error('Duplicate Track');
       } else {
@@ -145,10 +149,8 @@ export default class SpotifyService {
   private createTrackURI = (trackId: string): string =>
     `spotify:track:${trackId}`;
 
-  private async doesPlaylistContainTrack(trackId: string) {
-    const playlistInfo = await this.spotifyApi.getPlaylist(
-      SPOTIFY_PLAYLIST_ID!
-    );
+  private async doesPlaylistContainTrack(trackId: string, playlistId: string) {
+    const playlistInfo = await this.spotifyApi.getPlaylist(playlistId);
 
     let i;
     for (i = 0; i < playlistInfo.body.tracks.items.length; i++) {
@@ -170,7 +172,7 @@ export default class SpotifyService {
     return this.spotifyApi.createAuthorizeURL(scopes, '');
   }
 
-  private async performNewAuthorization(onAuth: Function) {
+  private async performNewAuthorization(onAuth: () => void) {
     const authUrl = this.getAuthorizationUrl();
     console.log(
       'Click or go to the following link and give this app permissions'
@@ -193,7 +195,7 @@ export default class SpotifyService {
     });
   }
 
-  private async refreshToken(onAuth: Function) {
+  private async refreshToken(onAuth: () => void) {
     try {
       this.spotifyApi.setRefreshToken(this.spotifyAuth.refreshToken);
       this.spotifyApi.refreshAccessToken(async (err, data) => {

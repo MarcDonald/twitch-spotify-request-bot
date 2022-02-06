@@ -20,6 +20,8 @@ picked up.
 
 ## Deploy
 
+**NB:** [Open issue related to Heroku deployments](https://github.com/MarcDonald/twitch-spotify-request-bot/issues/18)
+
 Click here to deploy your bot to heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MarcDonald/twitch-spotify-request-bot)
@@ -42,7 +44,7 @@ Click here to deploy your bot to heroku
   set the `BOT_USERNAME` field to the name of the account you wish to use (must be the same account you generate the
   OAuth token for)
 
-## Prerequisites for local
+## Prerequisites for running locally
 
 - Some basic programming knowledge (running terminal commands and editing `.env`
   files)
@@ -50,6 +52,13 @@ Click here to deploy your bot to heroku
 - A Spotify account
 
 ## Setup
+
+### Development
+
+1. Run `yarn`
+2. Run `yarn run husky:prepare`
+
+### Running
 
 1. Go to the [Spotify developer dashboard](https://developer.spotify.com/dashboard/)
    and create a new application. The app can have whatever name and description you want
@@ -67,7 +76,7 @@ Click here to deploy your bot to heroku
   set the `BOT_USERNAME` field to the name of the account you wish to use (must be the same account you generate the
   OAuth token for)
 
-4. Run `bash ./build.sh`. This will automatically compile from source using `npm` and then build OS-native binaries
+4. Run `bash ./build.sh`. This will automatically compile from source using `yarn` and then build OS-native binaries
    using `pkg`
 5. Run the freshly compiled binary for your OS in `./dist`.
 6. Open the authorization link and give the app the required permissions
@@ -79,19 +88,14 @@ Click here to deploy your bot to heroku
 9. If there's a problem with Spotify authorization at any point, try deleting the
    `spotify-auth-store.json` file and starting the app again
 
-### Note
+#### Note
 
-#### Running without generating a binary file
+##### Running without generating a binary file
 
 If you would prefer to launch the bot without generating a binary file you can replace steps 4 and 5 the following
 
-- Run `npm install` or `yarn`
-- Run `npm run build && npm start` or `yarn build && yarn start`
-
-#### Generating package-lock files
-
-Avoid generating new `package-lock.json` files unless you are using an Ubuntu machine. This is due to a bug with the
-Heroku deploy requiring `xubuntu` dependencies.
+- Run `yarn`
+- Run `yarn build && yarn start`
 
 ## Open Source Libraries Used
 
@@ -160,6 +164,7 @@ MIT License
 Checkout the [Contributors file](./CONTRIBUTORS.md) to see everyone who has helped out with the bot
 
 ### [Material Design Icons](https://github.com/google/material-design-icons)
+
 Used for the icon
 
 Apache 2 License

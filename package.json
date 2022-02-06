@@ -1,17 +1,21 @@
 {
   "name": "twitch-spotify-request",
-  "version": "4.2.3",
+  "version": "4.2.4",
   "description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run tsc",
+    "test": "echo \"Error: no test specified\"",
+    "build": "yarn run tsc",
     "tsc": "tsc",
-    "start": "node build/index.js",
-    "dev": "npm run build && npm start",
+    "start": "node dist/index.js",
+    "dev": "yarn run build && yarn start",
     "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "lint": "prettier -c 'src/**/*{.js,.ts}' && prettier -c '*.md'",
-    "lint:fix": "prettier --write 'src/**/*{.js,.ts}' && prettier --write '*.md'"
+    "lint": "eslint -c .eslintrc.js .",
+    "lint:fix": "yarn run lint --fix",
+    "format": "prettier -c .prettierrc.js .",
+    "format:fix": "yarn run format --write",
+    "lint:staged": "lint-staged --allow-empty",
+    "husky:prepare": "husky install"
   },
   "engines": {
     "node": ">=14.x"
@@ -34,6 +38,18 @@
     "nodemon": "2.0.13",
     "prettier": "2.0.5",
     "ts-node": "8.10.2",
-    "typescript": "3.9.7"
+    "typescript": "3.9.7",
+    "husky": "7.0.4",
+    "lint-staged": "12.3.3",
+    "@typescript-eslint/eslint-plugin": "5.10.2",
+    "@typescript-eslint/parser": "5.10.1",
+    "eslint": "8.7.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-promise": "6.0.0",
+    "eslint-plugin-standard": "5.0.0"
   }
 }
