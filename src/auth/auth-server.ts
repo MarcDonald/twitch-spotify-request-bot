@@ -1,8 +1,8 @@
 import env from 'env-smart';
 import express from 'express';
 
-import { SpotifyService } from '@/spotify';
-import { envDirectory } from '@/utils';
+import { SpotifyService } from '../spotify';
+import { envDirectory } from '../utils';
 
 import 'dotenv/config';
 
