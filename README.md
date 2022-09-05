@@ -42,7 +42,9 @@ Click here to deploy your bot to heroku
 - If you wish to have chat feedback, set `CHAT_FEEDBACK` to true then generate a
   [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in the `.env` file. Also
   set the `BOT_USERNAME` field to the name of the account you wish to use (must be the same account you generate the
-  OAuth token for)
+  OAuth token for). 
+  
+  **Do NOT commit these to Git, they are SECRETS!**
 
 ## Prerequisites for running locally
 
@@ -75,6 +77,8 @@ Click here to deploy your bot to heroku
   [Twitch Chat OAuth Token](https://twitchapps.com/tmi/) and set it as the `TWITCH_TOKEN` field in the `.env` file. Also
   set the `BOT_USERNAME` field to the name of the account you wish to use (must be the same account you generate the
   OAuth token for)
+  
+  **Do NOT commit this file to Git as it will contain SECRETS to log in as you!**
 
 4. Run `bash ./build.sh`. This will automatically compile from source using `yarn` and then build OS-native binaries
    using `pkg`
