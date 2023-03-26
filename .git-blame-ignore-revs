@@ -1,0 +1,5 @@
+# Run this command to always ignore formatting commits in `git blame`
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Ran linter and switched to tabs
+dc55faf2cd2f68e85f074584559576dc166b2dc7
