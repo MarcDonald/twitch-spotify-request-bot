@@ -78,12 +78,18 @@ export default class SpotifyService {
 					await this.addToQueue(trackId, songInfo?.body.name);
 					chatFeedback(`Success: ${songInfo?.body.name} added to queue`);
 				} catch (e) {
-					if (e.message === 'Not Found') {
-						console.error(
-							'Unable to add song to queue - Song may not exist or you may not have the Spotify client open and active'
-						);
+					if (e instanceof Error) {
+						if (e.message === 'Not Found') {
+							console.error(
+								'Unable to add song to queue - Song may not exist or you may not have the Spotify client open and active'
+							);
+						} else {
+							console.error(
+								`Error: Unable to add song to queue - ${e.message}`
+							);
+						}
 					} else {
-						console.error(`Error: Unable to add song to queue - ${e.message}`);
+						console.error(e);
 					}
 					chatFeedback(`Fail: ${songInfo?.body.name} not added to queue`);
 				}
@@ -94,12 +100,18 @@ export default class SpotifyService {
 					await this.addToPlaylist(trackId, songInfo?.body.name);
 					chatFeedback(`Success: ${songInfo?.body.name} added to playlist`);
 				} catch (e) {
-					if (e.message === 'Duplicate Track') {
-						chatFeedback(
-							`Fail (duplicate): ${songInfo?.body.name} already in the playlist`
-						);
+					if (e instanceof Error) {
+						if (e.message === 'Duplicate Track') {
+							chatFeedback(
+								`Fail (duplicate): ${songInfo?.body.name} already in the playlist`
+							);
+						} else {
+							chatFeedback(
+								`Fail: ${songInfo?.body.name} not added to playlist`
+							);
+						}
 					} else {
-						chatFeedback(`Fail: ${songInfo?.body.name} not added to playlist`);
+						console.error(e);
 					}
 				}
 			}
@@ -114,7 +126,7 @@ export default class SpotifyService {
 			}
 		} catch (e) {
 			console.error(`Error adding track ${e}`);
-			if (e.body?.error?.message === 'invalid id') {
+			if ((e as any).body?.error?.message === 'invalid id') {
 				chatFeedback('Fail (invalid ID): Link contains an invalid ID');
 			} else {
 				chatFeedback('Fail: Error occurred adding track');
@@ -153,7 +165,7 @@ export default class SpotifyService {
 
 		let i;
 		for (i = 0; i < playlistInfo.body.tracks.items.length; i++) {
-			if (playlistInfo.body.tracks.items[i].track.id === trackId) {
+			if (playlistInfo.body.tracks.items[i].track?.id === trackId) {
 				return true;
 			}
 		}

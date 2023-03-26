@@ -1,7 +1,7 @@
 #!/bin/bash
 #title					:build.sh
-#description			:This script compiles twitch-spotify-request-bot
-#description2			:by @MarcDonald and builds OS-native binaries.
+#description		:This script compiles twitch-spotify-request-bot
+#description2		:by @MarcDonald and builds OS-native binaries.
 #author					:@Colorful
 #version				:1.0
 #usage					:bash build.sh

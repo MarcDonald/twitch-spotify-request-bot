@@ -7,10 +7,10 @@
 	"license": "MIT",
 	"scripts": {
 		"test": "echo \"Error: no test specified\"",
-		"build": "yarn run tsc",
+		"build": "npm run tsc",
 		"tsc": "tsc",
 		"start": "node dist/index.js",
-		"dev": "yarn run build && yarn start",
+		"dev": "npm run build && npm start",
 		"start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
 		"lint": "eslint --ignore-path .gitignore .",
 		"lint:fix": "eslint --ignore-path .gitignore --fix .",
@@ -46,8 +46,8 @@
 		"typescript": "5.0.2"
 	},
 	"engines": {
-		"node": "18",
-		"npm": "9"
+		"node": ">=16",
+		"npm": ">=8"
 	},
 	"prettier": "@marcdonald/prettier-config",
 	"eslintConfig": {
