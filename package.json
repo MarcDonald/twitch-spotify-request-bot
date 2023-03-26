@@ -1,56 +1,58 @@
 {
-  "name": "twitch-spotify-request",
-  "version": "5.0.0",
-  "description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
-  "main": "dist/index.js",
-  "author": "Marc Donald",
-  "license": "MIT",
-  "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "build": "yarn run tsc",
-    "tsc": "tsc",
-    "start": "node dist/index.js",
-    "dev": "yarn run build && yarn start",
-    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "lint": "eslint --ignore-path .gitignore .",
-    "lint:fix": "eslint --ignore-path .gitignore --fix .",
-    "lint:staged": "lint-staged --allow-empty",
-    "format": "prettier --check --ignore-path .gitignore .",
-    "format:fix": "prettier --check --write --ignore-path .gitignore .",
-    "prepare": "husky install"
-  },
-  "dependencies": {
-    "dotenv": "16.0.3",
-    "env-smart": "2.3.0",
-    "express": "4.18.2",
-    "fs": "0.0.1-security",
-    "spotify-web-api-node": "5.0.2",
-    "tmi.js": "1.8.5"
-  },
-  "devDependencies": {
-    "@types/express": "4.17.17",
-    "@types/node": "18.15.10",
-    "@types/spotify-web-api-node": "5.0.7",
-    "@types/tmi.js": "1.8.3",
-    "@marcdonald/eslint-config": "2.0.2",
-    "@marcdonald/lint-staged-config": "1.0.2",
-    "@marcdonald/prettier-config": "1.1.2",
-    "eslint": "8.36.0",
-    "husky": "8.0.3",
-    "lint-staged": "13.2.0",
-    "nodemon": "2.0.22",
-    "prettier": "2.0.5",
-    "ts-node": "10.9.1",
-    "typescript": "5.0.2"
-  },
-  "engines": {
-    "node": "18",
-    "npm": "9"
-  },
-  "prettier": "@marcdonald/prettier-config",
-  "eslintConfig": {
-    "extends": [
-      "@marcdonald/eslint-config"
-    ]
-  }
+	"name": "twitch-spotify-request",
+	"version": "5.0.0",
+	"description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
+	"main": "dist/index.js",
+	"author": "Marc Donald",
+	"license": "MIT",
+	"scripts": {
+		"test": "echo \"Error: no test specified\"",
+		"build": "yarn run tsc",
+		"tsc": "tsc",
+		"start": "node dist/index.js",
+		"dev": "yarn run build && yarn start",
+		"start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+		"lint": "eslint --ignore-path .gitignore .",
+		"lint:fix": "eslint --ignore-path .gitignore --fix .",
+		"lint:staged": "lint-staged --allow-empty",
+		"format": "prettier --check --ignore-path .gitignore .",
+		"format:fix": "prettier --check --write --ignore-path .gitignore .",
+		"prepare": "husky install"
+	},
+	"dependencies": {
+		"env-smart": "2.3.0",
+		"express": "4.18.2",
+		"fs": "0.0.1-security",
+		"spotify-web-api-node": "5.0.2",
+		"tmi.js": "1.8.5"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^17.4.4",
+		"@marcdonald/commitlint-config": "1.1.2",
+		"@marcdonald/eslint-config": "2.1.2",
+		"@marcdonald/lint-staged-config": "1.0.2",
+		"@marcdonald/prettier-config": "1.1.2",
+		"@types/express": "4.17.17",
+		"@types/node": "18.15.10",
+		"@types/spotify-web-api-node": "5.0.7",
+		"@types/tmi.js": "1.8.3",
+		"dotenv": "16.0.3",
+		"eslint": "8.36.0",
+		"husky": "8.0.3",
+		"lint-staged": "13.2.0",
+		"nodemon": "2.0.22",
+		"prettier": "2.0.5",
+		"ts-node": "10.9.1",
+		"typescript": "5.0.2"
+	},
+	"engines": {
+		"node": "18",
+		"npm": "9"
+	},
+	"prettier": "@marcdonald/prettier-config",
+	"eslintConfig": {
+		"extends": [
+			"@marcdonald/eslint-config"
+		]
+	}
 }

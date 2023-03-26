@@ -3,3 +3,4 @@ spotify-auth-store.json
 dist/
 node_modules/
 .idea/
+.cmmiter
