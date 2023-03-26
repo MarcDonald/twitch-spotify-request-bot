@@ -25,6 +25,8 @@ picked up.
 - Some basic programming knowledge (running terminal commands and editing `.env` files)
 - [Node](https://nodejs.org/en/) (developed and tested on 16 - your mileage may vary on other versions)
 - A Spotify account
+- A GitHub Personal Access Token (PAT) with the `read:packages` scope stored in an environment variable called `GH_PKG_AUTH_TOKEN`
+  - [Click here to generate one](https://github.com/settings/tokens/new?description=Twitch%20Spotify%20Request%20Bot&scopes=read%3Apackages)
 
 ### Running
 
