@@ -1,46 +1,31 @@
 #!/bin/bash
-#title					:build.sh
-#description		:This script compiles twitch-spotify-request-bot
-#description2		:by @MarcDonald and builds OS-native binaries.
-#author					:@Colorful
-#version				:1.0
-#usage					:bash build.sh
-#==============================================================================
+
+echo "Checking if .env file exists";
 
 ENV=./.env
 
-echo "Checking if .env file exists...";
-sleep 2
-	
-echo "Initializing yarn...";
-yarn install --frozen-lockfile
 
 if [ -f "$ENV" ]; then
-
-	clear >$(tty)
-	echo "Compiling source to JS...";
-	yarn run build
-	
+	echo "Found .env file";
 else
-	clear >$(tty)
-	echo "Please create a .env file based on .env.template to continue...";
-	sleep 2
+	echo "Please create a .env file based on .env.template to continue";
 	exit
-
 fi
 
-clear >$(tty)
-echo "Building OS-native binaries from JS...";
-pkg ./dist/index.js --targets node14-win-x64,node14-macos-x64,node14-linux-x64 --out-path ./dist/
+echo "Initializing npm...";
+npm ci
 
-clear >$(tty)
+echo "Compiling source to JS...";
+npm run build
+
+echo "Building OS-native binaries from JS...";
+mkdir -p ./out
+pkg ./dist/index.js --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path ./out/
+
 echo "Cleaning up...";
-mv ./dist/index-linux ./dist/twitch-spotify-bot-linux
-mv ./dist/index-win.exe ./dist/twitch-spotify-bot-win.exe
-mv ./dist/index-macos ./dist/twitch-spotify-bot-macos
-sleep 2
-		
-clear >$(tty)
-echo "Thank you for using my little script //Colorful";
-sleep 2
+mv ./out/index-linux ./out/twitch-spotify-bot-linux
+mv ./out/index-win.exe ./out/twitch-spotify-bot-win.exe
+mv ./out/index-macos ./out/twitch-spotify-bot-macos
+
+echo "Done! Check the 'out' folder for the compiled binaries.";
 exit
