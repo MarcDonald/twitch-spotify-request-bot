@@ -2,8 +2,8 @@ import * as path from 'path';
 
 import * as dotenv from 'dotenv';
 
-import { SpotifyService } from './spotify';
-import { TwitchService } from './twitch';
+import SpotifyService from './spotify/spotify.service';
+import TwitchService from './twitch/twitch.service';
 import { configSchema } from './types/config';
 import { envDirectory } from './utils';
 

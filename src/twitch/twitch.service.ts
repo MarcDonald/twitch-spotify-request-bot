@@ -1,6 +1,6 @@
-import tmi, { ChatUserstate } from 'tmi.js';
+import { Client, ChatUserstate, client } from 'tmi.js';
 
-import { SpotifyService } from '../spotify';
+import SpotifyService from '../spotify/spotify.service';
 import Config from '../types/config';
 import { getTrackIdFromLink, SPOTIFY_LINK_START } from '../utils';
 
@@ -13,7 +13,7 @@ interface TwitchOptions {
 }
 
 export default class TwitchService {
-	private twitchClient: tmi.Client | null = null;
+	private twitchClient: Client | null = null;
 
 	constructor(
 		private readonly config: Config,
@@ -42,7 +42,7 @@ export default class TwitchService {
 			}
 		}
 
-		this.twitchClient = tmi.client(twitchOptions);
+		this.twitchClient = client(twitchOptions);
 
 		this.twitchClient.on('connected', (_addr: string, _port: number) => {
 			console.log(`Connected to ${this.config.TWITCH_CHANNEL}'s chat`);

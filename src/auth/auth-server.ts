@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { SpotifyService } from '../spotify';
+import SpotifyService from '../spotify/spotify.service';
 import Config from '../types/config';
 
 export const waitForCode = (

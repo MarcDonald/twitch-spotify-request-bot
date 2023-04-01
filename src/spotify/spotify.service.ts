@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import fs from 'fs';
+import * as fs from 'fs';
 
 import SpotifyWebApi from 'spotify-web-api-node';
 

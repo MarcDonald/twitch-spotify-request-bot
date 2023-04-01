@@ -1,4 +1,4 @@
-name: 'Verify PR'
+name: 'Verify Commits'
 
 on:
   workflow_dispatch:
