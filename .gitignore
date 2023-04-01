@@ -1,6 +1,7 @@
 .env
 spotify-auth-store.json
 dist/
+out/
 node_modules/
 .idea/
 .cmmiter

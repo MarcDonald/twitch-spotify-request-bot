@@ -2,38 +2,25 @@ import 'dotenv/config';
 
 import fs from 'fs';
 
-import env from 'env-smart';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 import { SpotifyAuth, waitForCode } from '../auth';
-import { envDirectory } from '../utils';
-
-env.load({ directory: envDirectory });
-
-const {
-	SPOTIFY_CLIENT_ID,
-	SPOTIFY_CLIENT_SECRET,
-	AUTH_SERVER_PORT,
-	ADD_TO_QUEUE,
-	ADD_TO_PLAYLIST,
-	SPOTIFY_PLAYLIST_ID,
-	HOST,
-} = process.env;
+import Config from '../types/config';
 
 export default class SpotifyService {
 	private spotifyApi: SpotifyWebApi;
 	private spotifyAuth: SpotifyAuth;
 
-	constructor() {
+	constructor(private readonly config: Config) {
 		let redirectUri;
 		if (process.env.PORT) {
-			redirectUri = `${HOST}/spotifyAuth`;
+			redirectUri = `${config.HOST}/spotifyAuth`;
 		} else {
-			redirectUri = `${HOST}:${AUTH_SERVER_PORT}/spotifyAuth`;
+			redirectUri = `${config.HOST}:${config.AUTH_SERVER_PORT}/spotifyAuth`;
 		}
 		this.spotifyApi = new SpotifyWebApi({
-			clientId: SPOTIFY_CLIENT_ID,
-			clientSecret: SPOTIFY_CLIENT_SECRET,
+			clientId: config.SPOTIFY_CLIENT_ID,
+			clientSecret: config.SPOTIFY_CLIENT_SECRET,
 			redirectUri: `${redirectUri}`,
 		});
 
@@ -73,7 +60,7 @@ export default class SpotifyService {
 		const addSong = async () => {
 			console.log(`Attempting to add ${trackId}`);
 			const songInfo = await this.spotifyApi.getTrack(trackId);
-			if (ADD_TO_QUEUE) {
+			if (this.config.ADD_TO_QUEUE) {
 				try {
 					await this.addToQueue(trackId, songInfo?.body.name);
 					chatFeedback(`Success: ${songInfo?.body.name} added to queue`);
@@ -95,7 +82,7 @@ export default class SpotifyService {
 				}
 			}
 
-			if (ADD_TO_PLAYLIST) {
+			if (this.config.ADD_TO_PLAYLIST) {
 				try {
 					await this.addToPlaylist(trackId, songInfo?.body.name);
 					chatFeedback(`Success: ${songInfo?.body.name} added to playlist`);
@@ -140,19 +127,25 @@ export default class SpotifyService {
 	}
 
 	private async addToPlaylist(trackId: string, songName: string) {
-		if (SPOTIFY_PLAYLIST_ID) {
-			if (await this.doesPlaylistContainTrack(trackId, SPOTIFY_PLAYLIST_ID)) {
+		if (this.config.SPOTIFY_PLAYLIST_ID) {
+			if (
+				await this.doesPlaylistContainTrack(
+					trackId,
+					this.config.SPOTIFY_PLAYLIST_ID
+				)
+			) {
 				console.log(`${songName} is already in the playlist`);
 				throw new Error('Duplicate Track');
 			} else {
-				await this.spotifyApi.addTracksToPlaylist(SPOTIFY_PLAYLIST_ID, [
-					this.createTrackURI(trackId),
-				]);
+				await this.spotifyApi.addTracksToPlaylist(
+					this.config.SPOTIFY_PLAYLIST_ID,
+					[this.createTrackURI(trackId)]
+				);
 				console.log(`Added ${songName} to playlist`);
 			}
 		} else {
 			console.error(
-				'Error: Cannot add to playlist - Please provide a playlist ID in the config file'
+				'Error: Cannot add to playlist - Please provide a playlist ID in the config.ts file'
 			);
 		}
 	}
@@ -189,7 +182,7 @@ export default class SpotifyService {
 			'Click or go to the following link and give this app permissions'
 		);
 		console.log(`\n${authUrl}\n`);
-		waitForCode((code: string) => {
+		waitForCode(this.config, (code: string) => {
 			this.spotifyApi.authorizationCodeGrant(code, async (error, data) => {
 				if (error) {
 					console.error(error);

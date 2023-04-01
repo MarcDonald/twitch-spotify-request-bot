@@ -1,19 +1,8 @@
-import env from 'env-smart';
 import tmi, { ChatUserstate } from 'tmi.js';
 
 import { SpotifyService } from '../spotify';
-import { envDirectory, getTrackIdFromLink, SPOTIFY_LINK_START } from '../utils';
-
-env.load({ directory: envDirectory });
-
-const {
-	TWITCH_CHANNEL,
-	COMMAND_PREFIX,
-	SUBSCRIBERS_ONLY,
-	TWITCH_TOKEN,
-	BOT_USERNAME,
-	CHAT_FEEDBACK,
-} = process.env;
+import Config from '../types/config';
+import { getTrackIdFromLink, SPOTIFY_LINK_START } from '../utils';
 
 interface TwitchOptions {
 	channels: string[];
@@ -26,25 +15,28 @@ interface TwitchOptions {
 export default class TwitchService {
 	private twitchClient: tmi.Client | null = null;
 
-	constructor(private spotifyService: SpotifyService) {}
+	constructor(
+		private readonly config: Config,
+		private readonly spotifyService: SpotifyService
+	) {}
 
 	public async connectToChat() {
 		let twitchOptions: TwitchOptions = {
-			channels: [TWITCH_CHANNEL],
+			channels: [this.config.TWITCH_CHANNEL],
 		};
 
-		if (CHAT_FEEDBACK) {
-			if (TWITCH_TOKEN && BOT_USERNAME) {
+		if (this.config.CHAT_FEEDBACK) {
+			if (this.config.TWITCH_TOKEN && this.config.BOT_USERNAME) {
 				twitchOptions = {
 					...twitchOptions,
 					identity: {
-						username: BOT_USERNAME,
-						password: TWITCH_TOKEN,
+						username: this.config.BOT_USERNAME,
+						password: this.config.TWITCH_TOKEN,
 					},
 				};
 			} else {
 				console.error(
-					'Error: Chat feedback enabled but there is no TWITCH_TOKEN or BOT_USERNAME in the config'
+					'Error: Chat feedback enabled but there is no TWITCH_TOKEN or BOT_USERNAME in the config.ts'
 				);
 				process.exit(-1);
 			}
@@ -53,7 +45,7 @@ export default class TwitchService {
 		this.twitchClient = tmi.client(twitchOptions);
 
 		this.twitchClient.on('connected', (_addr: string, _port: number) => {
-			console.log(`Connected to ${TWITCH_CHANNEL}'s chat`);
+			console.log(`Connected to ${this.config.TWITCH_CHANNEL}'s chat`);
 		});
 
 		this.twitchClient.on(
@@ -84,15 +76,19 @@ export default class TwitchService {
 			return;
 		}
 
-		if (COMMAND_PREFIX && msg.startsWith(COMMAND_PREFIX)) {
-			if (SUBSCRIBERS_ONLY) {
+		if (
+			this.config.COMMAND_PREFIX &&
+			msg.startsWith(this.config.COMMAND_PREFIX)
+		) {
+			if (this.config.SUBSCRIBERS_ONLY) {
+				console.log(this.config.SUBSCRIBERS_ONLY);
 				if (!userState.subscriber) {
 					return;
 				}
 			}
 
 			console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-			msg = msg.substring(`${COMMAND_PREFIX} `.length);
+			msg = msg.substring(`${this.config.COMMAND_PREFIX} `.length);
 			if (msg.startsWith(SPOTIFY_LINK_START)) {
 				await this.handleSpotifyLink(msg, target);
 			} else {
@@ -119,7 +115,7 @@ export default class TwitchService {
 	}
 
 	private chatFeedback(target: string, message: string) {
-		if (CHAT_FEEDBACK) {
+		if (this.config.CHAT_FEEDBACK) {
 			this.twitchClient?.say(target, message);
 		}
 	}
