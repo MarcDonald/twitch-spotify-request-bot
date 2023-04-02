@@ -41,13 +41,12 @@ picked up.
 
 4.  Create a `./.env` file based on `./.env.template` file and fill in the fields
 
-    - The playlist ID can be found by - Right-clicking on the playlist -> clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
-      e.g. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
+    - The playlist ID can be found by either:
 
-          		_**OR**_
-
-          	- Right-clicking on the playlist -> clicking Share -> Copy Link to Playlist and then copying the ID after `https://open.spotify.com/playlist/` and before the `?si=`
-          e.g. `https://open.spotify.com/playlist/{THIS_STRING_IS_THE_ID}?si=12345123`)
+      - Right-clicking on the playlist -> clicking Share -> Copy Spotify URI and then copying the ID after `spotify:playlist:`
+        e.g. `spotify:playlist:{THIS_STRING_IS_THE_ID}`)
+      - Or by right-clicking on the playlist -> clicking Share -> Copy Link to Playlist and then copying the ID after `https://open.spotify.com/playlist/` and before the `?si=`
+        e.g. `https://open.spotify.com/playlist/{THIS_STRING_IS_THE_ID}?si=12345123`)
 
     - The Spotify client ID and secret are obtained from the application you created in the Spotify developer dashboard
 
