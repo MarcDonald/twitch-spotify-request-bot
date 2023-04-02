@@ -4,8 +4,9 @@ import * as fs from 'fs';
 
 import SpotifyWebApi from 'spotify-web-api-node';
 
-import { SpotifyAuth, waitForCode } from '../auth';
+import { waitForCode } from '../auth/auth-server';
 import Config from '../types/config';
+import SpotifyAuth from '../types/spotify-auth';
 
 export default class SpotifyService {
 	private spotifyApi: SpotifyWebApi;
@@ -23,11 +24,18 @@ export default class SpotifyService {
 		});
 
 		if (!fs.existsSync('./spotify-auth-store.json')) {
+			const authToStore: SpotifyAuth = {
+				accessToken: '',
+				refreshToken: '',
+				expireTime: new Date().getTime() / 1000,
+			};
+
 			fs.writeFileSync(
 				'./spotify-auth-store.json',
-				JSON.stringify(new SpotifyAuth('', '', new Date().getTime() / 1000))
+				JSON.stringify(authToStore)
 			);
 		}
+
 		this.spotifyAuth = JSON.parse(
 			fs.readFileSync('./spotify-auth-store.json', 'utf8')
 		);
@@ -229,11 +237,11 @@ export default class SpotifyService {
 		refreshToken: string,
 		expireTime: number
 	) {
-		const newSpotifyAuth = new SpotifyAuth(
+		const newSpotifyAuth: SpotifyAuth = {
 			accessToken,
 			refreshToken,
-			expireTime
-		);
+			expireTime,
+		};
 		this.spotifyAuth = newSpotifyAuth;
 		fs.writeFile(
 			'./spotify-auth-store.json',

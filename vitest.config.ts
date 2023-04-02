@@ -16,7 +16,6 @@ export default defineConfig({
 				'test',
 				'**/*.test.ts',
 				'src/types/errors.ts',
-				'src/auth/spotify-auth.ts',
 				'src/utils/constants.ts',
 			],
 			branches: 80,
