@@ -1,12 +1,14 @@
 {
 	"name": "twitch-spotify-request",
-	"version": "5.0.0",
+	"version": "5.1.0",
 	"description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
 	"main": "dist/index.js",
 	"author": "Marc Donald",
 	"license": "MIT",
 	"scripts": {
-		"test": "echo \"Error: no test specified\"",
+		"test": "vitest run",
+		"test:watch": "vitest watch",
+		"test:coverage": "vitest run --coverage",
 		"build": "npm run tsc",
 		"tsc": "tsc",
 		"start": "node dist/index.js",
@@ -44,6 +46,7 @@
 		"prettier": "2.0.5",
 		"ts-node": "10.9.1",
 		"typescript": "5.0.2",
+		"vitest": "^0.29.8",
 		"zod": "^3.21.4"
 	},
 	"engines": {
