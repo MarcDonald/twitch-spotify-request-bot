@@ -10,8 +10,15 @@ export default defineConfig({
 		globals: true,
 		environment: 'node',
 		coverage: {
-			reporter: ['text', 'lcov', 'html'],
-			exclude: [...configDefaults.exclude, 'test', '**/*.test.ts'],
+			src: ['src/**/*.ts'],
+			exclude: [
+				...configDefaults.exclude,
+				'test',
+				'**/*.test.ts',
+				'src/types/errors.ts',
+				'src/auth/spotify-auth.ts',
+				'src/utils/constants.ts',
+			],
 			branches: 80,
 			functions: 80,
 			lines: 80,

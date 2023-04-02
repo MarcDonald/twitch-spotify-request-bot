@@ -4,4 +4,5 @@ dist/
 out/
 node_modules/
 .idea/
+coverage
 .cmmiter

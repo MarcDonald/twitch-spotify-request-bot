@@ -13,11 +13,13 @@ export const waitForCode = (
 	const server = app.listen(port, () => {
 		return console.log(`Auth server is listening on ${port}`);
 	});
+
 	app.get('/', (req, res) => {
 		const spotifyService = new SpotifyService(config);
 		const authURL = spotifyService.getAuthorizationUrl();
 		res.redirect(authURL);
 	});
+
 	app.get('/spotifyAuth', (req, res) => {
 		res.send('Authorization received, you can close this window now.');
 		server.close();

@@ -10,7 +10,8 @@
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"types": ["vitest/globals"]
 	},
 	"include": ["**/*.ts"],
 	"exclude": ["dist", "node_modules"]

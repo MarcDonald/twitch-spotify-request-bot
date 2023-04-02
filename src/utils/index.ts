@@ -1,2 +1,2 @@
 export * from './constants';
-export * from './messageUtils';
+export * from './message.util';

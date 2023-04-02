@@ -12,12 +12,10 @@ export default class SpotifyService {
 	private spotifyAuth: SpotifyAuth;
 
 	constructor(private readonly config: Config) {
-		let redirectUri;
-		if (process.env.PORT) {
-			redirectUri = `${config.HOST}/spotifyAuth`;
-		} else {
-			redirectUri = `${config.HOST}:${config.AUTH_SERVER_PORT}/spotifyAuth`;
-		}
+		const redirectUri = config.AUTH_SERVER_PORT
+			? `${config.HOST}/spotifyAuth`
+			: `${config.HOST}:${config.AUTH_SERVER_PORT}/spotifyAuth`;
+
 		this.spotifyApi = new SpotifyWebApi({
 			clientId: config.SPOTIFY_CLIENT_ID,
 			clientSecret: config.SPOTIFY_CLIENT_SECRET,
