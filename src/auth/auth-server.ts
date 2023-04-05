@@ -1,6 +1,6 @@
 import express from 'express';
 
-import SpotifyService from '../spotify/spotify.service';
+import { createAuthorizeURL } from '../spotify/spotify.api';
 import Config from '../types/config';
 
 export const waitForCode = (
@@ -15,8 +15,7 @@ export const waitForCode = (
 	});
 
 	app.get('/', (req, res) => {
-		const spotifyService = new SpotifyService(config);
-		const authURL = spotifyService.getAuthorizationUrl();
+		const authURL = createAuthorizeURL();
 		res.redirect(authURL);
 	});
 

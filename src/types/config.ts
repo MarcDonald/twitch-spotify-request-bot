@@ -14,21 +14,40 @@ const stringToBool = (value: string, ctx: RefinementCtx) => {
 	}
 };
 
-export const configSchema = z.object({
+const baseSchema = z.object({
 	TWITCH_CHANNEL: z.string(),
 	SPOTIFY_CLIENT_ID: z.string(),
 	SPOTIFY_CLIENT_SECRET: z.string(),
-	SPOTIFY_PLAYLIST_ID: z.string(),
 	TWITCH_TOKEN: z.string(),
 	BOT_USERNAME: z.string(),
 	CHAT_FEEDBACK: z.string().transform(stringToBool),
 	ADD_TO_QUEUE: z.string().transform(stringToBool),
-	ADD_TO_PLAYLIST: z.string().transform(stringToBool),
 	SUBSCRIBERS_ONLY: z.string().transform(stringToBool),
 	COMMAND_PREFIX: z.string(),
 	AUTH_SERVER_PORT: z.coerce.number(),
 	HOST: z.string(),
+	LOG_LEVEL: z.union([
+		z.literal('verbose'),
+		z.literal('log'),
+		z.literal('chat'),
+	]),
+	ADD_TO_PLAYLIST: z.string().transform(stringToBool),
 });
+
+const noPlaylistSchema = baseSchema.extend({
+	ADD_TO_PLAYLIST: z.literal('false').transform(stringToBool),
+	SPOTIFY_PLAYLIST_ID: z.string().optional(),
+});
+
+const playlistSchema = baseSchema.extend({
+	ADD_TO_PLAYLIST: z.literal('true').transform(stringToBool),
+	SPOTIFY_PLAYLIST_ID: z.string().length(22),
+});
+
+export const configSchema = z.discriminatedUnion('ADD_TO_PLAYLIST', [
+	noPlaylistSchema,
+	playlistSchema,
+]);
 
 export type Config = z.infer<typeof configSchema>;
 

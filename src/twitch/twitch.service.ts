@@ -1,6 +1,6 @@
 import { Client, ChatUserstate, client } from 'tmi.js';
 
-import SpotifyService from '../spotify/spotify.service';
+import { requestTrack } from '../spotify/spotify.service';
 import Config from '../types/config';
 import { NoTrackIDError } from '../types/errors';
 import { getTrackIdFromLink, SPOTIFY_LINK_START } from '../utils';
@@ -16,10 +16,7 @@ interface TwitchOptions {
 export default class TwitchService {
 	private twitchClient: Client | null = null;
 
-	constructor(
-		private readonly config: Config,
-		private readonly spotifyService: SpotifyService
-	) {}
+	constructor(private readonly config: Config) {}
 
 	public async connectToChat() {
 		let twitchOptions: TwitchOptions = {
@@ -103,9 +100,7 @@ export default class TwitchService {
 	private async handleSpotifyLink(message: string, target: string) {
 		try {
 			const trackId = getTrackIdFromLink(message);
-			await this.spotifyService.addTrack(trackId, (chatMessage) => {
-				this.chatFeedback(target, chatMessage);
-			});
+			await requestTrack(trackId);
 		} catch (e) {
 			if (e instanceof NoTrackIDError) {
 				console.error('Unable to parse track ID from message');
