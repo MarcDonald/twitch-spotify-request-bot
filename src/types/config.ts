@@ -31,7 +31,6 @@ const baseSchema = z.object({
 		z.literal('log'),
 		z.literal('chat'),
 	]),
-	ADD_TO_PLAYLIST: z.string().transform(stringToBool),
 });
 
 const noPlaylistSchema = baseSchema.extend({

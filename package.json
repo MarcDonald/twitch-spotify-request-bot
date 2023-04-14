@@ -2,7 +2,6 @@
 	"name": "twitch-spotify-request",
 	"version": "6.0.0",
 	"description": "Bot to scrape Twitch chat for Spotify links, then add them to a playlist",
-	"main": "dist/index.js",
 	"author": "Marc Donald",
 	"license": "MIT",
 	"scripts": {
@@ -10,9 +9,9 @@
 		"test:watch": "vitest watch",
 		"test:coverage": "vitest run --coverage",
 		"build": "tsc -p tsconfig.build.json",
-		"start": "node dist/index.js",
+		"start": "ts-node src/app.ts",
 		"dev": "npm run build && npm start",
-		"start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+		"start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
 		"lint": "eslint --ignore-path .gitignore .",
 		"lint:fix": "eslint --ignore-path .gitignore --fix .",
 		"lint:staged": "lint-staged --allow-empty",
@@ -24,7 +23,9 @@
 		"express": "4.18.2",
 		"fs": "0.0.1-security",
 		"spotify-web-api-node": "5.0.2",
-		"tmi.js": "1.8.5"
+		"tmi.js": "1.8.5",
+		"@modularbot/core": "file:../modular-twitch-bot/packages/core",
+		"@modularbot/logger": "file:../modular-twitch-bot/packages/logger"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^17.4.4",
@@ -57,6 +58,9 @@
 	"eslintConfig": {
 		"extends": [
 			"@marcdonald/eslint-config"
-		]
+		],
+		"rules": {
+			"no-console": "error"
+		}
 	}
 }

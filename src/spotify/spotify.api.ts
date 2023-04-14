@@ -3,8 +3,8 @@ import fs from 'fs';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 import { waitForCode } from '../auth/auth-server';
-import { CONFIG } from '../index';
 import SpotifyAuth from '../types/spotify-auth';
+import { log } from '../utils';
 
 let spotifyApi: SpotifyWebApi;
 let cachedAuth: SpotifyAuth;
@@ -13,6 +13,7 @@ const createSpotifyApi = async (config: {
 	clientId: string;
 	clientSecret: string;
 	redirectUri: string;
+	port: number;
 }) => {
 	spotifyApi = new SpotifyWebApi(config);
 	if (!fs.existsSync('./spotify-auth-store.json')) {
@@ -30,7 +31,7 @@ const createSpotifyApi = async (config: {
 	);
 	setSpotifyAuth(auth);
 
-	await authorize();
+	await authorize(config.port);
 };
 
 const setSpotifyAuth = ({
@@ -47,8 +48,8 @@ const setSpotifyAuth = ({
 
 const refreshTokenIfRequired = async () => {
 	if (hasTokenExpired()) {
-		console.log('Spotify token expired, refreshing...');
-		const newAuth = await refreshToken(cachedAuth.refreshToken);
+		log.info('Spotify token expired, refreshing...');
+		const newAuth = await refreshToken(cachedAuth?.refreshToken);
 		writeNewSpotifyAuth(newAuth);
 	}
 };
@@ -150,7 +151,7 @@ const authorizationCodeGrant = async (code: string): Promise<SpotifyAuth> => {
 		spotifyApi.setRefreshToken(refreshToken);
 		return { accessToken, refreshToken, expireTime };
 	} catch (e) {
-		console.error(e);
+		log.error(e);
 		process.exit(-1);
 	}
 };
@@ -168,7 +169,7 @@ const refreshToken = async (refreshToken: string): Promise<SpotifyAuth> => {
 			expireTime,
 		};
 	} catch (e) {
-		console.error(`Error refreshing access token ${e}`);
+		log.error(`Error refreshing access token ${e}`);
 		process.exit(-1);
 	}
 };
@@ -178,13 +179,11 @@ const calculateExpireTime = (expiresIn: number): number =>
 
 const createTrackURI = (trackId: string): string => `spotify:track:${trackId}`;
 
-const performNewAuthorization = async () => {
+const performNewAuthorization = async (port: number) => {
 	const authUrl = createAuthorizeURL();
-	console.log(
-		'Click or go to the following link and give this app permissions'
-	);
-	console.log(`\n${authUrl}\n`);
-	waitForCode(CONFIG, async (code: string) => {
+	log.info('Click or go to the following link and give this app permissions');
+	log.info(`\n${authUrl}\n`);
+	waitForCode(port, async (code: string) => {
 		const newAuth = await authorizationCodeGrant(code);
 		writeNewSpotifyAuth(newAuth);
 	});
@@ -195,30 +194,30 @@ const writeNewSpotifyAuth = (newAuth: SpotifyAuth) => {
 	try {
 		fs.writeFileSync('./spotify-auth-store.json', JSON.stringify(newAuth));
 	} catch (e) {
-		console.error(`Error writing new auth to file ${e}`);
+		log.error(`Error writing new auth to file ${e}`);
 	}
 };
 
 const hasTokenExpired = () => {
-	return new Date().getTime() / 1000 >= cachedAuth.expireTime;
+	return new Date().getTime() / 1000 >= cachedAuth?.expireTime;
 };
 
-const authorize = async () => {
-	console.log('Authorizing with Spotify');
+const authorize = async (port: number) => {
+	log.info('Authorizing with Spotify');
 	try {
-		if (!cachedAuth.refreshToken) {
-			console.log('No credentials found, performing new authorization');
-			await performNewAuthorization();
+		if (!cachedAuth?.refreshToken) {
+			log.info('No credentials found, performing new authorization');
+			await performNewAuthorization(port);
 		} else {
-			console.log('Spotify credentials found');
+			log.info('Spotify credentials found');
 			setSpotifyAuth({
-				accessToken: cachedAuth.accessToken,
-				refreshToken: cachedAuth.refreshToken,
+				accessToken: cachedAuth?.accessToken,
+				refreshToken: cachedAuth?.refreshToken,
 			});
 		}
 	} catch (e) {
-		console.error(`Error authorizing with Spotify ${e}`);
-		process.exit(-1);
+		log.error(`Error authorizing with Spotify ${e}`);
+		throw e;
 	}
 };
 

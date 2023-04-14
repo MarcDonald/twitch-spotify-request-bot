@@ -21,10 +21,3 @@ export const TEST_CONFIG_WITH_PLAYLIST: Config = {
 	ADD_TO_PLAYLIST: true,
 	SPOTIFY_PLAYLIST_ID: 'spottyPlaylist',
 };
-
-export const getConfigMockImplementation = <T>(
-	name: keyof Config,
-	configObj: Config = TEST_CONFIG_WITH_PLAYLIST
-): T => {
-	return configObj[name] as T;
-};
