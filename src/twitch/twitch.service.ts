@@ -2,7 +2,7 @@ import { Client, ChatUserstate, client } from 'tmi.js';
 
 import SpotifyService from '../spotify/spotify.service';
 import Config from '../types/config';
-import { getTrackIdFromLink, SPOTIFY_LINK_START } from '../utils';
+import { getTrackIdFromLink, SPOTIFY_LINK_REGEX } from '../utils';
 
 interface TwitchOptions {
 	channels: string[];
@@ -89,7 +89,7 @@ export default class TwitchService {
 
 			console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 			msg = msg.substring(`${this.config.COMMAND_PREFIX} `.length);
-			if (msg.startsWith(SPOTIFY_LINK_START)) {
+			if (SPOTIFY_LINK_REGEX.test(msg)) {
 				await this.handleSpotifyLink(msg, target);
 			} else {
 				console.log('Command used but no Spotify link provided');
