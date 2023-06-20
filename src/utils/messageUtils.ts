@@ -1,13 +1,10 @@
-export const SPOTIFY_LINK_START = 'https://open.spotify.com/track/';
+export const SPOTIFY_LINK_REGEX = /https:\/\/open\.spotify\.com(?:\/[-\w]+)*?\/track\/([\w]+)(?:\?.*)/;
 
 export const getTrackIdFromLink = (link: string): string | null => {
 	try {
-		const startOfId = SPOTIFY_LINK_START.length;
-		const endOfId = link.indexOf('?');
-		if (startOfId > 0 && endOfId > 0) {
-			return link.substring(startOfId, endOfId);
-		} else if (startOfId > 0 && endOfId === -1) {
-			return link.substring(startOfId);
+		let match = link.match(SPOTIFY_LINK_REGEX);
+		if (match !== null) {
+			return match[1];
 		} else {
 			throw Error('No track ID found in URL');
 		}
