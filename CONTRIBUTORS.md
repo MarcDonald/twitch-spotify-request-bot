@@ -16,3 +16,7 @@
 - [Colorful98](https://github.com/Colorful98)
 
   - Created the script to generate platform binaries (#10)
+
+- [ItsRumo](https://github.com/ItsRumo)
+
+  - Made spotify link recognition more robust using regex (#34)
