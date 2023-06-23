@@ -1,4 +1,4 @@
-export const SPOTIFY_LINK_REGEX = /https:\/\/open\.spotify\.com(?:\/[-\w]+)*?\/track\/([\w]+)(?:\?.*)/;
+export const SPOTIFY_LINK_REGEX = /https:\/\/open\.spotify\.com(?:\/[-\w]+)*?\/track\/([\w]+)(?:\?.*)?/;
 
 export const getTrackIdFromLink = (link: string): string | null => {
 	try {
